@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>香りのノート｜アロマテラピー検定1級</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="cards-expanded.css" />
+</head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-mark">✦</span><div><b>香りのノート</b><small>アロマテラピー検定 1級</small></div></div><button class="ghost" id="resetBtn">進捗をリセット</button></header>
+  <main>
+    <section class="hero"><div><p class="eyebrow">AROMA STUDY / 01</p><h1>精油を、<em>香りから</em>覚える。</h1><p class="intro">カードをめくって特徴を整理し、すきま時間にクイズで定着。まずはよく出る精油から。</p></div><div class="hero-orb"><span>今日の<br><strong id="todayCount">0</strong>問</span></div></section>
+    <nav class="tabs"><button class="tab active" data-view="cards">精油カード</button><button class="tab" data-view="quiz">4択クイズ</button></nav>
+    <section id="cardsView" class="view active">
+      <div class="toolbar"><div class="search"><span>⌕</span><input id="search" placeholder="精油名・香り・成分で検索" /></div><div class="filters" id="filters"><button class="filter active" data-filter="すべて">すべて</button><button class="filter" data-filter="柑橘系">柑橘系</button><button class="filter" data-filter="フローラル">フローラル</button><button class="filter" data-filter="ハーブ">ハーブ</button><button class="filter" data-filter="樹木・樹脂">樹木・樹脂</button></div></div>
+      <div class="section-head"><div><p class="eyebrow">QUICK REVIEW</p><h2>精油カード <span id="resultCount"></span></h2></div><p class="hint">カードをクリックして裏返す</p></div>
+      <aside class="safety-note"><b>身体の不調に関する見方</b><span>記載内容は軽い不調時の芳香・セルフケアで選ばれる目安で、診断や治療の代わりではありません。強い痛み、突然の症状、長引く症状は医療機関へ。精油は飲まず、肌には必ず希釈して使用してください。</span></aside>
+      <div id="cardGrid" class="card-grid"></div>
+    </section>
+    <section id="quizView" class="view"><div class="quiz-shell"><div class="quiz-top"><div><p class="eyebrow">MINI QUIZ</p><h2>今日の4択クイズ</h2></div><span class="score" id="score">0 / 0</span></div><div id="quizContent"></div></div></section>
+  </main>
+  <footer>学習用メモ：精油の使用時は各製品の注意事項を確認してください。妊娠中・持病・服薬中などは専門家に相談しましょう。</footer>
+  <script src="app.js"></script>
+</body></html>
