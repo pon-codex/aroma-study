@@ -1,4 +1,4 @@
-.oil-card { height: 480px; }
+.oil-card { height: 525px; }
 .level-badge {
   position: absolute;
   top: 16px;
@@ -26,9 +26,11 @@
 }
 .family small { color: var(--muted); font-size: 8px; font-weight: 500; }
 .plant-photo {
-  width: 100%;
-  height: 112px;
-  flex: 0 0 112px;
+  width: min(78%, 168px);
+  aspect-ratio: 1 / 1;
+  height: auto;
+  flex: 0 0 auto;
+  align-self: center;
   margin-top: 12px;
   border: 1px solid rgba(60,89,75,.10);
   border-radius: 9px;
