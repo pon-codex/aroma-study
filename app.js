@@ -158,7 +158,55 @@ const plantFamilies={
  'レモングラス':'イネ科',
  'ローマンカモミール':'キク科'
 };
-const $=s=>document.querySelector(s);let filter='すべて', query='', flipped=new Set();let quizIndex=0, answered=false, correct=0;
+const $=s=>document.querySelector(s);let filter='すべて', query='', flipped=new Set();
+const quizTopics={component:'主要成分',family:'科名',extraction:'抽出方法',symptom:'症状'};
+let quizSettings={topic:'all',count:5},quizQuestions=[],quizIndex=0,answered=false,correct=0,quizStarted=false;
+const shuffle=list=>[...list].sort(()=>Math.random()-.5);
 function renderCards(){let list=oils.filter(o=>(filter==='すべて'||o.cat===filter)&&(Object.values(o).join(' ')+' '+aromaDescriptions[o.name]+' '+bodyConcerns[o.name]+' '+plantFamilies[o.name]+' '+extractionMethods[o.name]).toLowerCase().includes(query.toLowerCase()));$('#resultCount').textContent=`${list.length}種`;$('#cardGrid').innerHTML=list.map(o=>{const [symptoms,detail]=bodyConcerns[o.name].split('｜'),index=oils.indexOf(o),col=index%5,row=Math.floor(index/5);return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><span class="level-badge">${o.level===2?'2級対象':'1級追加'}</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="card-meta"><span class="family"><small>植物科名</small>${plantFamilies[o.name]}</span><span class="extraction"><small>抽出方法</small>${extractionMethods[o.name]}</span></div><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${aromaDescriptions[o.name]}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${plantFamilies[o.name]}　<b>主な成分：</b>${o.key}</p><p class="extraction-detail"><b>抽出方法：</b>${extractionMethods[o.name]}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`}).join('');document.querySelectorAll('.oil-card').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()})}
-function renderQuiz(){let o=oils[quizIndex%oils.length], choices=[o.key,...oils.filter(x=>x.name!==o.name).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.key)].sort(()=>Math.random()-.5);$('#quizContent').innerHTML=`<p class="question">${o.name}の主な成分として覚えるものは？</p><div class="answers">${choices.map(a=>`<button class="answer" data-answer="${a}">${a}</button>`).join('')}</div>${answered?'<button class="next" id="next">次の問題へ →</button>':''}`;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;if(b.dataset.answer===o.key){correct++;b.classList.add('correct')}else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===o.key&&x.classList.add('correct'))}$('#score').textContent=`${correct} / ${quizIndex+1}`;localStorage.setItem('aromaScore',correct);renderQuiz()});if(answered)$('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()}}
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#resetBtn').onclick=()=>{localStorage.clear();correct=0;quizIndex=0;$('#score').textContent='0 / 0';renderCards()};correct=Number(localStorage.getItem('aromaScore')||0);$('#todayCount').textContent=correct;renderCards();
+function makeQuestion(o,topic){
+ const data={
+  component:{prompt:`${o.name}の主な成分として覚えるものは？`,answer:o.key,pool:oils.map(x=>x.key)},
+  family:{prompt:`${o.name}の原料植物の科名は？`,answer:plantFamilies[o.name],pool:Object.values(plantFamilies)},
+  extraction:{prompt:`${o.name}の抽出方法は？`,answer:extractionMethods[o.name],pool:[...Object.values(extractionMethods),'油脂吸着法']},
+  symptom:{prompt:`${o.name}がセルフケアで選ばれることがある身体の不調は？`,answer:bodyConcerns[o.name].split('｜')[0],pool:Object.values(bodyConcerns).map(x=>x.split('｜')[0])}
+ }[topic];
+ const distractors=shuffle([...new Set(data.pool.filter(x=>x!==data.answer))]).slice(0,3);
+ return {...data,topic,oil:o.name,choices:shuffle([data.answer,...distractors])};
+}
+function renderQuizSetup(){
+ $('#score').textContent='設定';
+ $('#quizContent').innerHTML=`<div class="quiz-setup"><div class="setup-group"><b>出題分野</b><div class="quiz-options">${[['all','全分野'],...Object.entries(quizTopics)].map(([v,l])=>`<button class="quiz-option ${quizSettings.topic===v?'active':''}" data-topic="${v}">${l}</button>`).join('')}</div></div><div class="setup-group"><b>問題数</b><div class="quiz-options">${[5,10,20].map(n=>`<button class="quiz-option ${quizSettings.count===n?'active':''}" data-count="${n}">${n}問</button>`).join('')}</div></div><button class="start-quiz" id="startQuiz">この設定でスタート</button></div>`;
+ document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{quizSettings.topic=b.dataset.topic;renderQuizSetup()});
+ document.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{quizSettings.count=Number(b.dataset.count);renderQuizSetup()});
+ $('#startQuiz').onclick=startQuiz;
+}
+function startQuiz(){
+ const topics=quizSettings.topic==='all'?Object.keys(quizTopics):[quizSettings.topic];
+ const oilOrder=shuffle(oils),topicOrder=shuffle(topics);
+ quizQuestions=Array.from({length:quizSettings.count},(_,i)=>makeQuestion(oilOrder[i%oilOrder.length],topicOrder[i%topicOrder.length]));
+ quizIndex=0;correct=0;answered=false;quizStarted=true;renderQuiz();
+}
+function finishQuiz(){
+ quizStarted=false;
+ $('#score').textContent=`${correct} / ${quizSettings.count}`;
+ const rate=Math.round(correct/quizSettings.count*100);
+ $('#quizContent').innerHTML=`<div class="quiz-result"><span>${rate}%</span><h3>${correct} / ${quizSettings.count} 問正解</h3><p>${rate>=80?'よく定着しています。別の分野にも挑戦してみましょう。':rate>=60?'あと少しです。間違えた分野をカードで復習しましょう。':'カードを見直して、同じ分野でもう一度挑戦しましょう。'}</p><div><button class="start-quiz" id="retryQuiz">同じ設定でもう一度</button><button class="change-settings" id="changeSettings">設定を変更</button></div></div>`;
+ $('#retryQuiz').onclick=startQuiz;$('#changeSettings').onclick=renderQuizSetup;
+}
+function renderQuiz(){
+ if(!quizStarted){renderQuizSetup();return}
+ if(quizIndex>=quizQuestions.length){finishQuiz();return}
+ const q=quizQuestions[quizIndex];
+ $('#score').textContent=`${quizIndex+1} / ${quizSettings.count}`;
+ $('#quizContent').innerHTML=`<div class="quiz-progress"><span style="width:${(quizIndex/quizSettings.count)*100}%"></span></div><span class="topic-label">${quizTopics[q.topic]}</span><p class="question">${q.prompt}</p><div class="answers">${q.choices.map(a=>`<button class="answer" data-answer="${a}">${a}</button>`).join('')}</div><div id="quizFeedback"></div>`;
+ document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{
+  if(answered)return;answered=true;
+  const isCorrect=b.dataset.answer===q.answer;
+  if(isCorrect){correct++;b.classList.add('correct');localStorage.setItem('aromaTotalCorrect',Number(localStorage.getItem('aromaTotalCorrect')||0)+1)}
+  else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===q.answer&&x.classList.add('correct'))}
+  $('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;
+  $('#quizFeedback').innerHTML=`<p class="quiz-feedback ${isCorrect?'ok':'ng'}">${isCorrect?'正解！':`正解：${q.answer}`}</p><button class="next" id="next">${quizIndex+1===quizSettings.count?'結果を見る':'次の問題へ →'}</button>`;
+  $('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()};
+ });
+}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};$('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;renderCards();
