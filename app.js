@@ -94,6 +94,38 @@ const bodyConcerns={
  'レモングラス':'運動後の筋肉疲労・脚の重だるさ・眠気｜希釈したトリートメントや活動前の芳香に。皮膚刺激が強く、炎症部位には使わない。',
  'ローマンカモミール':'寝つきの悪さ・緊張による腹部の不快感・月経前のこわばり・敏感肌｜休息前の芳香や低濃度ケアに。強い腹痛や皮膚症状は受診する。'
 };
+const extractionMethods={
+ 'スイートオレンジ':'圧搾法',
+ 'ゼラニウム':'水蒸気蒸留法',
+ 'ティートリー':'水蒸気蒸留法',
+ 'フランキンセンス':'水蒸気蒸留法',
+ 'ペパーミント':'水蒸気蒸留法',
+ 'ユーカリ':'水蒸気蒸留法',
+ 'ラベンダー':'水蒸気蒸留法',
+ 'レモン':'圧搾法',
+ 'ローズ（アブソリュート）':'揮発性有機溶剤抽出法',
+ 'ローズオットー':'水蒸気蒸留法',
+ 'ローズマリー':'水蒸気蒸留法',
+ 'イランイラン':'水蒸気蒸留法',
+ 'クラリセージ':'水蒸気蒸留法',
+ 'グレープフルーツ':'圧搾法',
+ 'サイプレス':'水蒸気蒸留法',
+ 'サンダルウッド':'水蒸気蒸留法',
+ 'ジャーマンカモミール':'水蒸気蒸留法',
+ 'ジャスミン（アブソリュート）':'揮発性有機溶剤抽出法',
+ 'ジュニパーベリー':'水蒸気蒸留法',
+ 'スイートマージョラム':'水蒸気蒸留法',
+ 'ネロリ':'水蒸気蒸留法',
+ 'パチュリ':'水蒸気蒸留法',
+ 'ブラックペッパー':'水蒸気蒸留法',
+ 'ベチバー':'水蒸気蒸留法',
+ 'ベルガモット':'圧搾法',
+ 'ベンゾイン（レジノイド）':'揮発性有機溶剤抽出法',
+ 'ミルラ':'水蒸気蒸留法',
+ 'メリッサ':'水蒸気蒸留法',
+ 'レモングラス':'水蒸気蒸留法',
+ 'ローマンカモミール':'水蒸気蒸留法'
+};
 const plantFamilies={
  'スイートオレンジ':'ミカン科',
  'ゼラニウム':'フウロソウ科',
@@ -127,6 +159,6 @@ const plantFamilies={
  'ローマンカモミール':'キク科'
 };
 const $=s=>document.querySelector(s);let filter='すべて', query='', flipped=new Set();let quizIndex=0, answered=false, correct=0;
-function renderCards(){let list=oils.filter(o=>(filter==='すべて'||o.cat===filter)&&(Object.values(o).join(' ')+' '+aromaDescriptions[o.name]+' '+bodyConcerns[o.name]+' '+plantFamilies[o.name]).toLowerCase().includes(query.toLowerCase()));$('#resultCount').textContent=`${list.length}種`;$('#cardGrid').innerHTML=list.map(o=>{const [symptoms,detail]=bodyConcerns[o.name].split('｜'),index=oils.indexOf(o),col=index%5,row=Math.floor(index/5);return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><span class="level-badge">${o.level===2?'2級対象':'1級追加'}</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><span class="family"><small>植物科名</small>${plantFamilies[o.name]}</span><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${aromaDescriptions[o.name]}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${plantFamilies[o.name]}　<b>主な成分：</b>${o.key}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`}).join('');document.querySelectorAll('.oil-card').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()})}
+function renderCards(){let list=oils.filter(o=>(filter==='すべて'||o.cat===filter)&&(Object.values(o).join(' ')+' '+aromaDescriptions[o.name]+' '+bodyConcerns[o.name]+' '+plantFamilies[o.name]+' '+extractionMethods[o.name]).toLowerCase().includes(query.toLowerCase()));$('#resultCount').textContent=`${list.length}種`;$('#cardGrid').innerHTML=list.map(o=>{const [symptoms,detail]=bodyConcerns[o.name].split('｜'),index=oils.indexOf(o),col=index%5,row=Math.floor(index/5);return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><span class="level-badge">${o.level===2?'2級対象':'1級追加'}</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="card-meta"><span class="family"><small>植物科名</small>${plantFamilies[o.name]}</span><span class="extraction"><small>抽出方法</small>${extractionMethods[o.name]}</span></div><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${aromaDescriptions[o.name]}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${plantFamilies[o.name]}　<b>主な成分：</b>${o.key}</p><p class="extraction-detail"><b>抽出方法：</b>${extractionMethods[o.name]}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`}).join('');document.querySelectorAll('.oil-card').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()})}
 function renderQuiz(){let o=oils[quizIndex%oils.length], choices=[o.key,...oils.filter(x=>x.name!==o.name).sort(()=>Math.random()-.5).slice(0,3).map(x=>x.key)].sort(()=>Math.random()-.5);$('#quizContent').innerHTML=`<p class="question">${o.name}の主な成分として覚えるものは？</p><div class="answers">${choices.map(a=>`<button class="answer" data-answer="${a}">${a}</button>`).join('')}</div>${answered?'<button class="next" id="next">次の問題へ →</button>':''}`;document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;if(b.dataset.answer===o.key){correct++;b.classList.add('correct')}else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===o.key&&x.classList.add('correct'))}$('#score').textContent=`${correct} / ${quizIndex+1}`;localStorage.setItem('aromaScore',correct);renderQuiz()});if(answered)$('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()}}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#resetBtn').onclick=()=>{localStorage.clear();correct=0;quizIndex=0;$('#score').textContent='0 / 0';renderCards()};correct=Number(localStorage.getItem('aromaScore')||0);$('#todayCount').textContent=correct;renderCards();

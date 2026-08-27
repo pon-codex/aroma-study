@@ -1,4 +1,4 @@
-.oil-card { height: 525px; }
+.oil-card { height: 555px; }
 .level-badge {
   position: absolute;
   top: 16px;
@@ -11,12 +11,18 @@
   font-size: 9px;
 }
 .face h3 { margin-top: 25px; font-size: 21px; line-height: 1.45; }
-.family {
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-self: flex-start;
+  margin-top: 10px;
+}
+.family,
+.extraction {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  align-self: flex-start;
-  margin-top: 10px;
   padding: 5px 8px;
   border-radius: 6px;
   background: #f1f0e7;
@@ -24,7 +30,9 @@
   font-size: 11px;
   font-weight: 700;
 }
-.family small { color: var(--muted); font-size: 8px; font-weight: 500; }
+.extraction { background: #e9f1ec; }
+.family small,
+.extraction small { color: var(--muted); font-size: 8px; font-weight: 500; }
 .plant-photo {
   width: min(78%, 168px);
   aspect-ratio: 1 / 1;
@@ -73,5 +81,6 @@
 .body-box b { display: block; margin-bottom: 4px; color: var(--deep); font-size: 10px; }
 .body-box p { font-weight: 700; color: var(--ink); }
 .body-detail { margin-top: 9px !important; }
+.extraction-detail { margin-top: 4px !important; color: var(--deep); }
 .effect-list.compact { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(60,89,75,.12); gap: 3px; }
 @media(max-width:600px) { .safety-note { display: block; } .safety-note b { display: block; margin-bottom: 4px; } }
