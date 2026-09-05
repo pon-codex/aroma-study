@@ -7,21 +7,21 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="香りのノート" />
-  <title>香りのノート｜アロマテラピー検定1級</title>
-  <link rel="manifest" href="manifest.webmanifest?v=20260905" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260905" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=20260905" />
+  <title>香りのノート｜精油学習カード＆クイズ</title>
+  <link rel="manifest" href="manifest.webmanifest?v=20260906b" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=20260906b" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=20260906b" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260827" />
-  <link rel="stylesheet" href="cards-expanded.css?v=20260905" />
+  <link rel="stylesheet" href="styles.css?v=20260906b" />
+  <link rel="stylesheet" href="cards-expanded.css?v=20260906b" />
 </head>
 <body>
-  <header class="topbar"><div class="brand"><span class="brand-mark">✦</span><div><b>香りのノート</b><small>アロマテラピー検定 1級</small></div></div><div class="header-actions"><span class="plan-badge" id="planBadge">無料版</span><button class="upgrade-button" id="upgradeBtn">有料版を見る</button><button class="ghost" id="accountBtn">購入を復元</button><button class="ghost" id="logoutBtn" hidden>ログアウト</button><button class="ghost" id="resetBtn">進捗をリセット</button></div></header>
+  <header class="topbar"><div class="brand"><span class="brand-mark">✦</span><div><b>香りのノート</b><small>精油学習カード＆クイズ</small></div></div><div class="header-actions"><span class="plan-badge" id="planBadge">無料版</span><button class="upgrade-button" id="upgradeBtn">有料版を見る</button><button class="ghost" id="accountBtn">購入を復元</button><button class="ghost" id="logoutBtn" hidden>ログアウト</button><button class="ghost" id="resetBtn">進捗をリセット</button></div></header>
   <main>
     <div class="app-status" id="appStatus" hidden role="status"></div>
-    <section class="hero"><div><p class="eyebrow">AROMA STUDY / 01</p><h1>精油を、<em>香りから</em>覚える。</h1><p class="intro">カードをめくって特徴を整理し、すきま時間にクイズで定着。まずはよく出る精油から。</p></div><div class="hero-orb"><span>今日の<br><strong id="todayCount">0</strong>問</span></div></section>
+    <section class="hero"><div><p class="eyebrow">AROMA STUDY / 01</p><h1>精油を、<em>香りから</em>覚える。</h1><p class="intro">カードをめくって特徴を整理し、すきま時間にクイズで定着。まずは身近な10種から。</p></div><div class="hero-orb"><span>今日の<br><strong id="todayCount">0</strong>問</span></div></section>
     <nav class="tabs"><button class="tab active" data-view="cards">精油カード</button><button class="tab" data-view="quiz">4択クイズ</button></nav>
     <section id="cardsView" class="view active">
       <div class="toolbar"><div class="search"><span>⌕</span><input id="search" placeholder="精油名・香り・成分で検索" /></div><div class="filters" id="filters"><button class="filter active" data-filter="すべて">すべて</button><button class="filter" data-filter="柑橘系">柑橘系</button><button class="filter" data-filter="フローラル">フローラル</button><button class="filter" data-filter="ハーブ">ハーブ</button><button class="filter" data-filter="樹木・樹脂">樹木・樹脂</button></div></div>
@@ -32,7 +32,7 @@
     </section>
     <section id="quizView" class="view"><div class="quiz-shell"><div class="quiz-top"><div><p class="eyebrow">MINI QUIZ</p><h2>今日の4択クイズ</h2></div><span class="score" id="score">0 / 0</span></div><div id="quizContent"></div></div></section>
   </main>
-  <div class="modal-backdrop" id="upgradeModal" hidden><section class="upgrade-modal" role="dialog" aria-modal="true" aria-labelledby="upgradeTitle"><button class="modal-close" id="closeUpgrade" aria-label="閉じる">×</button><p class="eyebrow">PREMIUM PLAN</p><h2 id="upgradeTitle">30種すべてを、試験までしっかり。</h2><p class="upgrade-lead">有料版では、1級・2級対象の精油カードと4分野のクイズをすべて利用できます。</p><div class="plan-comparison"><div><small>無料版</small><strong>¥0</strong><ul><li>精油カード 10種</li><li>主要成分クイズ</li><li>5問モード</li></ul></div><div class="premium-plan"><span>おすすめ</span><small>有料版・買い切り</small><strong>¥1,480</strong><ul><li>精油カード 30種</li><li>主要成分・科名・抽出方法・症状</li><li>5問・10問・20問</li></ul></div></div><button class="checkout-button" id="checkoutButton" type="button" disabled>決済の初期設定中</button><p class="modal-note" id="checkoutMessage">安全なStripe決済画面へ移動します。</p><div class="restore-panel"><h3>購入済みの方</h3><p>購入時のメールアドレスへ復元用リンクを送ります。</p><form id="restoreForm"><label for="restoreEmail">メールアドレス</label><div><input id="restoreEmail" type="email" autocomplete="email" required placeholder="you@example.com"><button id="restoreButton" type="submit">復元メールを送る</button></div></form><p class="modal-note" id="restoreMessage" role="status"></p></div></section></div>
-  <footer>学習用メモ：精油の使用時は各製品の注意事項を確認してください。妊娠中・持病・服薬中などは専門家に相談しましょう。</footer>
-  <script src="app.js?v=20260906"></script>
+  <div class="modal-backdrop" id="upgradeModal" hidden><section class="upgrade-modal" role="dialog" aria-modal="true" aria-labelledby="upgradeTitle"><button class="modal-close" id="closeUpgrade" aria-label="閉じる">×</button><p class="eyebrow">PREMIUM PLAN</p><h2 id="upgradeTitle">30種の精油を、もっと深く。</h2><p class="upgrade-lead">有料版では、精油カード30種と4分野のクイズをすべて利用できます。</p><div class="plan-comparison"><div><small>無料版</small><strong>¥0</strong><ul><li>精油カード 10種</li><li>主要成分クイズ</li><li>5問モード</li></ul></div><div class="premium-plan"><span>おすすめ</span><small>有料版・買い切り</small><strong>¥1,480</strong><ul><li>精油カード 30種</li><li>主要成分・科名・抽出方法・症状</li><li>5問・10問・20問</li></ul></div></div><button class="checkout-button" id="checkoutButton" type="button" disabled>決済の初期設定中</button><p class="modal-note" id="checkoutMessage">安全なStripe決済画面へ移動します。</p><div class="restore-panel"><h3>購入済みの方</h3><p>購入時のメールアドレスへ復元用リンクを送ります。</p><form id="restoreForm"><label for="restoreEmail">メールアドレス</label><div><input id="restoreEmail" type="email" autocomplete="email" required placeholder="you@example.com"><button id="restoreButton" type="submit">復元メールを送る</button></div></form><p class="modal-note" id="restoreMessage" role="status"></p></div></section></div>
+  <footer><p>学習用メモ：精油の使用時は各製品の注意事項を確認してください。妊娠中・持病・服薬中などは専門家に相談しましょう。</p><p>本アプリは精油の知識を学ぶための独立した学習ツールであり、特定の団体による公式・公認・監修教材ではありません。</p></footer>
+  <script src="app.js?v=20260906b"></script>
 </body></html>

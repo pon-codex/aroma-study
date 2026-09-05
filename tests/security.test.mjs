@@ -4,6 +4,8 @@ import test from "node:test";
 
 const client = await readFile(new URL("../app.js", import.meta.url), "utf8");
 const premium = await readFile(new URL("../functions/lib/premium-content.js", import.meta.url), "utf8");
+const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+const manifest = await readFile(new URL("../manifest.webmanifest", import.meta.url), "utf8");
 
 test("premium study details are not shipped in the public client bundle", () => {
   assert.equal(client.includes("緊張による動悸感・寝つきの悪さ"), false);
@@ -19,4 +21,14 @@ test("developer preview is restricted to a local hostname", () => {
 
 test("API calls never embed a Stripe secret in client-side code", () => {
   assert.doesNotMatch(client, /[sr]k_(?:test|live)_/);
+});
+
+test("exam levels are not used in the learning app", () => {
+  const appContent = [client, premium, html, manifest].join("\n");
+  assert.doesNotMatch(appContent, /(?:アロマテラピー)?\u691c\u5b9a|[\uff11\uff1212]\u7d1a|level-badge|[".]level/);
+});
+
+test("the free and premium oil ranges stay at 10 and 30", () => {
+  assert.equal((client.match(/"name":"/g) ?? []).length, 30);
+  assert.equal((premium.match(/^    "name":/gm) ?? []).length, 20);
 });

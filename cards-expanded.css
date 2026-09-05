@@ -1,15 +1,4 @@
 .oil-card { height: 555px; }
-.level-badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 4px 8px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: #f8f8f2;
-  color: var(--deep);
-  font-size: 9px;
-}
 .face h3 { margin-top: 25px; font-size: 21px; line-height: 1.45; }
 .card-meta {
   display: flex;
