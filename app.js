@@ -1,219 +1,96 @@
-const oils=[
- {name:'スイートオレンジ',latin:'Citrus sinensis',cat:'柑橘系',scent:'甘くジューシー',note:'トップノート',key:'リモネン',level:2,effect:'心：緊張やイライラをゆるめ、明るい気分へ。｜身体：食欲がないときや休息前のリラックスに。｜暮らし：寝室や家族で過ごす空間の芳香に。'},
- {name:'ゼラニウム',latin:'Pelargonium graveolens',cat:'フローラル',scent:'ローズ調で甘い',note:'ミドルノート',key:'シトロネロール',level:2,effect:'心：気分の波を穏やかに整えたいときに。｜身体：月経前後など心身が揺らぎやすい時期の芳香に。｜美容：皮脂バランスを整えるスキンケアで親しまれる。'},
- {name:'ティートリー',latin:'Melaleuca alternifolia',cat:'樹木・樹脂',scent:'清潔感のある',note:'トップノート',key:'テルピネン-4-オール',level:2,effect:'心：疲れた気分をしゃきっと切り替える。｜身体：季節の変わり目のすっきりした芳香に。｜暮らし：清潔感のあるルームスプレーに向く。'},
- {name:'フランキンセンス',latin:'Boswellia carterii',cat:'樹木・樹脂',scent:'深く神聖な樹脂調',note:'ベースノート',key:'α-ピネン',level:2,effect:'心：不安や焦りを鎮め、深く落ち着きたいときに。｜身体：ゆっくりした呼吸や瞑想のお供に。｜美容：乾燥・年齢肌のケアで親しまれる。'},
- {name:'ペパーミント',latin:'Mentha × piperita',cat:'ハーブ',scent:'鋭く清涼感のある',note:'トップノート',key:'メントール',level:2,effect:'心：眠気を払い、集中したいときの気分転換に。｜身体：暑さや乗り物移動時の不快感を爽やかにする芳香に。｜注意：刺激が強いため少量から使用する。'},
- {name:'ユーカリ',latin:'Eucalyptus globulus',cat:'樹木・樹脂',scent:'クリアで鋭い',note:'トップノート',key:'1,8-シネオール',level:2,effect:'心：頭をクリアにして作業へ切り替えたいときに。｜身体：鼻やのどをすっきり感じたい季節の芳香に。｜注意：刺激を感じやすい人や乳幼児の周囲では慎重に。'},
- {name:'ラベンダー',latin:'Lavandula angustifolia',cat:'フローラル',scent:'やさしくハーバル',note:'ミドルノート',key:'酢酸リナリル',level:2,effect:'心：緊張をほどき、穏やかな休息へ導く。｜身体：就寝前や疲れた日のリラックスタイムに。｜美容：肌を健やかに保つケアで広く親しまれる。'},
- {name:'レモン',latin:'Citrus limon',cat:'柑橘系',scent:'フレッシュで明るい',note:'トップノート',key:'リモネン',level:2,effect:'心：集中力を保ち、頭をすっきりさせたいときに。｜暮らし：勉強部屋や掃除後の空間芳香に。｜注意：圧搾法の精油は肌への使用後、紫外線を避ける。'},
- {name:'ローズ（アブソリュート）',latin:'Rosa centifolia',cat:'フローラル',scent:'濃厚で甘い花',note:'ミドルノート',key:'フェニルエチルアルコール',level:2,effect:'心：悲しみや自信を失ったとき、気持ちをやさしく包む芳香に。｜美容：乾燥肌のぜいたくなケアに。｜特徴：溶剤抽出法で得る、濃厚で華やかな香り。'},
- {name:'ローズオットー',latin:'Rosa damascena',cat:'フローラル',scent:'上品で繊細な花',note:'ミドルノート',key:'シトロネロール',level:2,effect:'心：心を落ち着かせ、幸福感や自信を取り戻したいときに。｜美容：乾燥・年齢肌のケアで親しまれる。｜特徴：水蒸気蒸留法で得られ、低温で固まることがある。'},
- {name:'ローズマリー',latin:'Rosmarinus officinalis',cat:'ハーブ',scent:'すっきり樟脳調',note:'トップノート',key:'1,8-シネオール',level:2,effect:'心：記憶や集中を助けたい勉強・仕事時間に。｜身体：活動前の気分を高め、疲労感をリフレッシュ。｜注意：刺激が強めなので高濃度を避ける。'},
- {name:'イランイラン',latin:'Cananga odorata',cat:'フローラル',scent:'濃厚でエキゾチック',note:'ミドルノート',key:'β-カリオフィレン',level:1,effect:'心：緊張や怒りをゆるめ、幸福感を高めたいときに。｜身体：ゆったり休みたい夜の芳香に。｜注意：濃厚なので少量から。使いすぎると頭痛や不快感の原因になる。'},
- {name:'クラリセージ',latin:'Salvia sclarea',cat:'ハーブ',scent:'甘く温かいハーブ',note:'ミドルノート',key:'酢酸リナリル',level:1,effect:'心：緊張を解き、深くリラックスしたいときに。｜身体：月経前後など女性のリズムに寄り添う芳香として親しまれる。｜注意：妊娠中や飲酒前後の使用は避ける。'},
- {name:'グレープフルーツ',latin:'Citrus paradisi',cat:'柑橘系',scent:'爽やかでほろ苦い',note:'トップノート',key:'リモネン',level:1,effect:'心：落ち込んだ気分を軽くし、前向きに切り替える。｜身体：だるさを感じる朝や運動前後の芳香に。｜注意：圧搾法の精油は肌への使用後、紫外線を避ける。'},
- {name:'サイプレス',latin:'Cupressus sempervirens',cat:'樹木・樹脂',scent:'静かな針葉樹調',note:'ミドルノート',key:'α-ピネン',level:1,effect:'心：感情が高ぶったときに落ち着きを取り戻す。｜身体：長時間の立ち仕事後など、重だるさを感じる日のトリートメントに。｜暮らし：森林調の空間芳香に。'},
- {name:'サンダルウッド',latin:'Santalum album',cat:'樹木・樹脂',scent:'甘くウッディ',note:'ベースノート',key:'α-サンタロール',level:1,effect:'心：考えすぎを鎮め、瞑想や就寝前に静けさをもたらす。｜身体：乾燥が気になる季節の芳香・ケアに。｜特徴：香りが長く残り、ブレンドの保留剤にもなる。'},
- {name:'ジャーマンカモミール',latin:'Matricaria chamomilla',cat:'フローラル',scent:'濃厚で薬草調',note:'ミドルノート',key:'カマズレン',level:1,effect:'心：いら立ちや緊張を落ち着かせたいときに。｜美容：敏感に傾いた肌をいたわるケアで親しまれる。｜特徴：カマズレンにより精油が濃い青色を示す。'},
- {name:'ジャスミン（アブソリュート）',latin:'Jasminum grandiflorum',cat:'フローラル',scent:'濃密で官能的な花',note:'ミドルノート',key:'酢酸ベンジル',level:1,effect:'心：自信を失ったときや気分が沈んだときに、明るさと高揚感をもたらす。｜美容：乾燥肌のケアに。｜注意：香りが非常に強いため、ごく少量から使う。'},
- {name:'ジュニパーベリー',latin:'Juniperus communis',cat:'樹木・樹脂',scent:'鋭く爽やかな森林調',note:'ミドルノート',key:'α-ピネン',level:1,effect:'心：雑念を払い、気分をリセットしたいときに。｜身体：運動後やむくみ感・重だるさが気になる日のトリートメントに。｜暮らし：空間を清々しく整える芳香に。'},
- {name:'スイートマージョラム',latin:'Origanum majorana',cat:'ハーブ',scent:'温かくスパイシー',note:'ミドルノート',key:'テルピネン-4-オール',level:1,effect:'心：孤独感や不安を和らげ、安心して休みたいときに。｜身体：冷えやこわばりを感じる日の入浴・トリートメントに。｜注意：眠気を感じる場合がある。'},
- {name:'ネロリ',latin:'Citrus aurantium',cat:'フローラル',scent:'繊細でほろ苦い花',note:'ミドルノート',key:'リナロール',level:1,effect:'心：強い緊張や不安をゆるめ、安心感を得たいときに。｜身体：就寝前の芳香に。｜美容：乾燥肌や年齢肌のケアで親しまれる。ビターオレンジの花から得る。'},
- {name:'パチュリ',latin:'Pogostemon cablin',cat:'樹木・樹脂',scent:'土を思わせる重厚さ',note:'ベースノート',key:'パチュリアルコール',level:1,effect:'心：気持ちが落ち着かないとき、地に足をつけるような安定感を。｜美容：乾燥肌のケアに。｜特徴：熟成で香りが深まり、香りを長持ちさせる。'},
- {name:'ブラックペッパー',latin:'Piper nigrum',cat:'ハーブ',scent:'温かく鋭いスパイス',note:'ミドルノート',key:'β-カリオフィレン',level:1,effect:'心：無気力なときに活力と集中を取り戻す。｜身体：冷えや運動前後のこわばりが気になる日のトリートメントに。｜注意：皮膚刺激を避けるため低濃度で使う。'},
- {name:'ベチバー',latin:'Vetiveria zizanioides',cat:'樹木・樹脂',scent:'土と根の深い香り',note:'ベースノート',key:'ベチベロール',level:1,effect:'心：興奮や考えすぎを鎮め、深く休みたいときに。｜身体：就寝前の落ち着いた芳香に。｜特徴：粘度が高く、香りが非常に長く残るため保留剤にもなる。'},
- {name:'ベルガモット',latin:'Citrus bergamia',cat:'柑橘系',scent:'上品でほろ苦い柑橘',note:'トップノート',key:'酢酸リナリル',level:1,effect:'心：不安や緊張をほぐしつつ、沈んだ気分を明るくする。｜身体：休息前や食欲が落ちたときの芳香に。｜注意：圧搾法の精油は光毒性が強く、肌使用後は紫外線を避ける。'},
- {name:'ベンゾイン（レジノイド）',latin:'Styrax benzoin',cat:'樹木・樹脂',scent:'バニラに似た甘い樹脂',note:'ベースノート',key:'安息香酸',level:1,effect:'心：寂しさや不安を感じるときに安心感をもたらす。｜身体：乾燥する季節の芳香に。｜美容：ひび割れや乾燥が気になる肌のケアで親しまれる。粘度が高い。'},
- {name:'ミルラ',latin:'Commiphora myrrha',cat:'樹木・樹脂',scent:'苦みのあるスモーキーな樹脂',note:'ベースノート',key:'フラノオイデスマ-1,3-ジエン',level:1,effect:'心：気持ちを静め、内省や瞑想に集中したいときに。｜美容：乾燥・年齢肌のケアで親しまれる。｜特徴：没薬とも呼ばれ、古代から香料として利用された。'},
- {name:'メリッサ',latin:'Melissa officinalis',cat:'ハーブ',scent:'繊細で甘いレモン調',note:'ミドルノート',key:'シトラール',level:1,effect:'心：強い不安やショックで落ち込んだ気分をやさしく支える。｜身体：緊張で休みにくいときの芳香に。｜注意：刺激が強く高価な精油。低濃度で使用する。'},
- {name:'レモングラス',latin:'Cymbopogon citratus',cat:'ハーブ',scent:'力強いレモンと草',note:'トップノート',key:'シトラール',level:1,effect:'心：疲れて集中できないとき、気分をしゃきっとさせる。｜身体：運動後の疲労感やこわばりが気になる日のケアに。｜暮らし：虫が気になる季節の芳香に。皮膚刺激に注意。'},
- {name:'ローマンカモミール',latin:'Chamaemelum nobile',cat:'フローラル',scent:'青りんごのように甘い',note:'ミドルノート',key:'アンゲリカ酸エステル類',level:1,effect:'心：不安・怒り・緊張をなだめ、眠りの準備をしたいときに。｜身体：ストレスでお腹が落ち着かないと感じるときの芳香に。｜美容：敏感な肌のケアで親しまれる。'}
-];
-const aromaDescriptions={
- 'スイートオレンジ':'もぎたての果皮をむいたときのような、甘く親しみやすい柑橘の香り。',
- 'ゼラニウム':'ローズに青葉とほのかなミントを重ねたような、甘く爽やかな香り。',
- 'ティートリー':'清潔感のある鋭い葉の香りに、少し薬草や土を思わせる力強さ。',
- 'フランキンセンス':'澄んだレモン調の軽さと、静かな木・樹脂の深みを併せ持つ香り。',
- 'ペパーミント':'ミントガムを思わせる強い清涼感と、鼻に抜ける鋭く冷たい香り。',
- 'ユーカリ':'森林の葉を揉んだような、シャープで透明感のあるカンファー調の香り。',
- 'ラベンダー':'やわらかな花の甘さに、草原を思わせるハーブの爽やかさが重なる香り。',
- 'レモン':'果皮を搾った瞬間のような、酸味を感じる明るくキリッとした香り。',
- 'ローズ（アブソリュート）':'蜜のような甘さと深みがある、重厚で濃密な生花のバラの香り。',
- 'ローズオットー':'朝露をまとったバラのような、みずみずしく上品で繊細な香り。',
- 'ローズマリー':'針葉樹とハーブを合わせたような、すっきり鋭いカンファー調の香り。',
- 'イランイラン':'熟した果実やジャスミンを思わせる、甘く濃厚でエキゾチックな香り。',
- 'クラリセージ':'温かなハーブに紅茶や干し草、ほのかなナッツを感じる甘い香り。',
- 'グレープフルーツ':'果汁の爽やかさに果皮のほろ苦さを含む、軽快でみずみずしい香り。',
- 'サイプレス':'雨上がりの針葉樹林を思わせる、乾いた木と葉の静かで凛とした香り。',
- 'サンダルウッド':'白檀らしい、ミルキーな甘さと温かさが長く残る重厚な木の香り。',
- 'ジャーマンカモミール':'濃い薬草や干し草を思わせる、甘さと苦みを含んだ力強い香り。',
- 'ジャスミン（アブソリュート）':'夜に咲く白い花を思わせる、甘く濃密で少し動物的な香り。',
- 'ジュニパーベリー':'ジンを思わせる、針葉樹と果実の甘さを含んだシャープな森林の香り。',
- 'スイートマージョラム':'温かいハーブに、ほのかな木とスパイスを感じる丸みのある香り。',
- 'ネロリ':'白い花の上品な甘さに、青さと柑橘のほろ苦さが溶け合う繊細な香り。',
- 'パチュリ':'湿った土や落ち葉、墨を思わせる、甘さのある深く重厚な香り。',
- 'ブラックペッパー':'挽きたての黒こしょうのような、乾いた辛さと温かさのある香り。',
- 'ベチバー':'雨に濡れた土や根、スモーキーな木を思わせる非常に深い香り。',
- 'ベルガモット':'紅茶のアールグレイを思わせる、上品な甘さと苦みのある柑橘の香り。',
- 'ベンゾイン（レジノイド）':'バニラやキャラメルを思わせる、温かく濃厚で包み込むような甘い香り。',
- 'ミルラ':'煙、土、薬草を思わせる、苦みと渋みを含んだ神秘的な樹脂の香り。',
- 'メリッサ':'レモンの爽やかさに、やわらかな草と蜂蜜の甘さを重ねた繊細な香り。',
- 'レモングラス':'レモンを強くしたような酸味に、青々しい草の力強さを感じる香り。',
- 'ローマンカモミール':'青りんごや熟した果実を思わせる、甘くやさしいハーブの香り。'
-};
-const bodyConcerns={
- 'スイートオレンジ':'食欲低下・緊張で眠りにくい・胃の重さ｜ストレスで食欲や休息のリズムが乱れたときの芳香浴に。',
- 'ゼラニウム':'月経前の重だるさ・むくみ感・緊張性の頭重感｜女性の周期に伴う気分や身体の揺らぎ、脚の重さを感じる日の芳香やトリートメントに。',
- 'ティートリー':'季節の変わり目の鼻・のどの不快感、肌を清潔に保ちたいとき｜空間芳香や希釈した部分的なスキンケアで親しまれる。',
- 'フランキンセンス':'浅い呼吸・緊張・乾燥肌｜胸が詰まるように感じるときのゆっくりした呼吸や、乾燥する季節のスキンケアに。',
- 'ペパーミント':'眠気・吐き気や乗り物酔いの不快感・緊張型の頭重感・暑さ｜短時間の芳香で気分をすっきりさせたいときに。乳幼児の顔周辺には使わない。',
- 'ユーカリ':'鼻づまり感・のどの不快感・頭がぼんやりする感じ｜季節性の不快感があるときの短時間の芳香に。呼吸器症状が強い場合は受診する。',
- 'ラベンダー':'寝つきの悪さ・緊張性の頭重感・肩のこわばり・軽い肌荒れ｜休息前の芳香、温湿布、希釈したスキンケアで広く用いられる。',
- 'レモン':'眠気・集中力低下・食欲低下・室内のこもった不快感｜朝や勉強中の芳香に。皮膚使用後の紫外線に注意する。',
- 'ローズ（アブソリュート）':'月経前後の不快感・緊張・乾燥肌｜周期に伴う気分の落ち込みや、乾燥が気になるときの低濃度ケアに。',
- 'ローズオットー':'月経前後の不快感・更年期の揺らぎ・乾燥肌｜女性のライフステージに伴う緊張や乾燥をいたわる芳香・スキンケアに。',
- 'ローズマリー':'眠気・集中力低下・肩や脚のこわばり・運動後の疲労感｜活動前の芳香や、希釈したトリートメントに。持病や服薬がある場合は専門家へ相談。',
- 'イランイラン':'緊張による動悸感・寝つきの悪さ・月経前の気分の高ぶり｜少量の芳香で心身をゆるめたいときに。動悸が続く、胸痛を伴う場合はすぐ受診。',
- 'クラリセージ':'月経前後の重だるさ・腹部の緊張・寝つきの悪さ｜女性の周期に伴う不快感や、深く休みたいときの芳香に。妊娠中は慎重に。',
- 'グレープフルーツ':'朝のだるさ・むくみ感・食欲の乱れ｜活動を始めたいときの芳香や、脚が重い日のトリートメントに。皮膚使用後の紫外線に注意。',
- 'サイプレス':'脚のむくみ感・長時間立った後の重だるさ・発汗の不快感｜下肢をやさしく流すトリートメントや、すっきりした芳香に。',
- 'サンダルウッド':'寝つきの悪さ・浅い呼吸・乾燥肌｜考え事で休めない夜の芳香や、乾燥が強い時期の低濃度スキンケアに。',
- 'ジャーマンカモミール':'赤み・かゆみを伴う敏感な肌、緊張による胃の不快感｜刺激に傾いた肌をいたわる低濃度ケアや、休息時の芳香に。皮膚症状が強い場合は受診。',
- 'ジャスミン（アブソリュート）':'月経前の重だるさ・緊張・乾燥肌｜心身がこわばるときの芳香や乾燥肌ケアに。香りと皮膚刺激が強いためごく低濃度で。',
- 'ジュニパーベリー':'むくみ感・運動後の筋肉疲労・身体の重だるさ｜脚や身体をすっきりさせたい日のトリートメントに。強い浮腫や片脚だけの腫れは受診。',
- 'スイートマージョラム':'冷え・肩や腰のこわばり・寝つきの悪さ・緊張性の頭重感｜温浴や温湿布、希釈したトリートメントで温かく休みたいときに。',
- 'ネロリ':'緊張による胃の不快感・動悸感・寝つきの悪さ・乾燥肌｜強い不安で身体がこわばるときの芳香に。動悸や胃症状が続く場合は受診。',
- 'パチュリ':'むくみ感・乾燥やひび割れ・落ち着かない感じ｜重だるい日のトリートメントや、乾燥部分の低濃度ケアに。',
- 'ブラックペッパー':'冷え・筋肉のこわばり・運動前後の身体の重さ｜温かさを感じたい部分の希釈トリートメントに。炎症や熱感がある部位には使わない。',
- 'ベチバー':'寝つきの悪さ・神経の高ぶり・疲れているのに休めない感じ｜就寝前にごく少量を芳香させ、深く落ち着きたいときに。',
- 'ベルガモット':'緊張による食欲低下・胃の不快感・寝つきの悪さ｜気分をゆるめながら明るくしたいときの芳香に。皮膚使用後の紫外線に特に注意。',
- 'ベンゾイン（レジノイド）':'乾燥・ひび割れ・のどが乾く季節の不快感｜保湿目的の低濃度スキンケアや、甘く温かな空間芳香に。粘度が高く溶けにくい。',
- 'ミルラ':'乾燥肌・口元の乾燥・のどが乾く季節の不快感｜乾燥部分の低濃度ケアや、落ち着いた空間芳香に。口に入れたり、うがいには使用しない。',
- 'メリッサ':'緊張による動悸感・寝つきの悪さ・胃の不快感｜不安で身体に力が入るときの短時間の芳香に。皮膚刺激が強いため低濃度で。',
- 'レモングラス':'運動後の筋肉疲労・脚の重だるさ・眠気｜希釈したトリートメントや活動前の芳香に。皮膚刺激が強く、炎症部位には使わない。',
- 'ローマンカモミール':'寝つきの悪さ・緊張による腹部の不快感・月経前のこわばり・敏感肌｜休息前の芳香や低濃度ケアに。強い腹痛や皮膚症状は受診する。'
-};
-const extractionMethods={
- 'スイートオレンジ':'圧搾法',
- 'ゼラニウム':'水蒸気蒸留法',
- 'ティートリー':'水蒸気蒸留法',
- 'フランキンセンス':'水蒸気蒸留法',
- 'ペパーミント':'水蒸気蒸留法',
- 'ユーカリ':'水蒸気蒸留法',
- 'ラベンダー':'水蒸気蒸留法',
- 'レモン':'圧搾法',
- 'ローズ（アブソリュート）':'揮発性有機溶剤抽出法',
- 'ローズオットー':'水蒸気蒸留法',
- 'ローズマリー':'水蒸気蒸留法',
- 'イランイラン':'水蒸気蒸留法',
- 'クラリセージ':'水蒸気蒸留法',
- 'グレープフルーツ':'圧搾法',
- 'サイプレス':'水蒸気蒸留法',
- 'サンダルウッド':'水蒸気蒸留法',
- 'ジャーマンカモミール':'水蒸気蒸留法',
- 'ジャスミン（アブソリュート）':'揮発性有機溶剤抽出法',
- 'ジュニパーベリー':'水蒸気蒸留法',
- 'スイートマージョラム':'水蒸気蒸留法',
- 'ネロリ':'水蒸気蒸留法',
- 'パチュリ':'水蒸気蒸留法',
- 'ブラックペッパー':'水蒸気蒸留法',
- 'ベチバー':'水蒸気蒸留法',
- 'ベルガモット':'圧搾法',
- 'ベンゾイン（レジノイド）':'揮発性有機溶剤抽出法',
- 'ミルラ':'水蒸気蒸留法',
- 'メリッサ':'水蒸気蒸留法',
- 'レモングラス':'水蒸気蒸留法',
- 'ローマンカモミール':'水蒸気蒸留法'
-};
-const plantFamilies={
- 'スイートオレンジ':'ミカン科',
- 'ゼラニウム':'フウロソウ科',
- 'ティートリー':'フトモモ科',
- 'フランキンセンス':'カンラン科',
- 'ペパーミント':'シソ科',
- 'ユーカリ':'フトモモ科',
- 'ラベンダー':'シソ科',
- 'レモン':'ミカン科',
- 'ローズ（アブソリュート）':'バラ科',
- 'ローズオットー':'バラ科',
- 'ローズマリー':'シソ科',
- 'イランイラン':'バンレイシ科',
- 'クラリセージ':'シソ科',
- 'グレープフルーツ':'ミカン科',
- 'サイプレス':'ヒノキ科',
- 'サンダルウッド':'ビャクダン科',
- 'ジャーマンカモミール':'キク科',
- 'ジャスミン（アブソリュート）':'モクセイ科',
- 'ジュニパーベリー':'ヒノキ科',
- 'スイートマージョラム':'シソ科',
- 'ネロリ':'ミカン科',
- 'パチュリ':'シソ科',
- 'ブラックペッパー':'コショウ科',
- 'ベチバー':'イネ科',
- 'ベルガモット':'ミカン科',
- 'ベンゾイン（レジノイド）':'エゴノキ科',
- 'ミルラ':'カンラン科',
- 'メリッサ':'シソ科',
- 'レモングラス':'イネ科',
- 'ローマンカモミール':'キク科'
-};
-const $=s=>document.querySelector(s);let filter='すべて', query='', flipped=new Set();
+const freeOils=[{"name":"スイートオレンジ","latin":"Citrus sinensis","cat":"柑橘系","scent":"甘くジューシー","note":"トップノート","key":"リモネン","level":2,"effect":"心：緊張やイライラをゆるめ、明るい気分へ。｜身体：食欲がないときや休息前のリラックスに。｜暮らし：寝室や家族で過ごす空間の芳香に。","aroma":"もぎたての果皮をむいたときのような、甘く親しみやすい柑橘の香り。","bodyConcern":"食欲低下・緊張で眠りにくい・胃の重さ｜ストレスで食欲や休息のリズムが乱れたときの芳香浴に。","extraction":"圧搾法","family":"ミカン科","imageIndex":0},{"name":"ゼラニウム","latin":"Pelargonium graveolens","cat":"フローラル","scent":"ローズ調で甘い","note":"ミドルノート","key":"シトロネロール","level":2,"effect":"心：気分の波を穏やかに整えたいときに。｜身体：月経前後など心身が揺らぎやすい時期の芳香に。｜美容：皮脂バランスを整えるスキンケアで親しまれる。","aroma":"ローズに青葉とほのかなミントを重ねたような、甘く爽やかな香り。","bodyConcern":"月経前の重だるさ・むくみ感・緊張性の頭重感｜女性の周期に伴う気分や身体の揺らぎ、脚の重さを感じる日の芳香やトリートメントに。","extraction":"水蒸気蒸留法","family":"フウロソウ科","imageIndex":1},{"name":"ティートリー","latin":"Melaleuca alternifolia","cat":"樹木・樹脂","scent":"清潔感のある","note":"トップノート","key":"テルピネン-4-オール","level":2,"effect":"心：疲れた気分をしゃきっと切り替える。｜身体：季節の変わり目のすっきりした芳香に。｜暮らし：清潔感のあるルームスプレーに向く。","aroma":"清潔感のある鋭い葉の香りに、少し薬草や土を思わせる力強さ。","bodyConcern":"季節の変わり目の鼻・のどの不快感、肌を清潔に保ちたいとき｜空間芳香や希釈した部分的なスキンケアで親しまれる。","extraction":"水蒸気蒸留法","family":"フトモモ科","imageIndex":2},{"name":"フランキンセンス","latin":"Boswellia carterii","cat":"樹木・樹脂","scent":"深く神聖な樹脂調","note":"ベースノート","key":"α-ピネン","level":2,"effect":"心：不安や焦りを鎮め、深く落ち着きたいときに。｜身体：ゆっくりした呼吸や瞑想のお供に。｜美容：乾燥・年齢肌のケアで親しまれる。","aroma":"澄んだレモン調の軽さと、静かな木・樹脂の深みを併せ持つ香り。","bodyConcern":"浅い呼吸・緊張・乾燥肌｜胸が詰まるように感じるときのゆっくりした呼吸や、乾燥する季節のスキンケアに。","extraction":"水蒸気蒸留法","family":"カンラン科","imageIndex":3},{"name":"ペパーミント","latin":"Mentha × piperita","cat":"ハーブ","scent":"鋭く清涼感のある","note":"トップノート","key":"メントール","level":2,"effect":"心：眠気を払い、集中したいときの気分転換に。｜身体：暑さや乗り物移動時の不快感を爽やかにする芳香に。｜注意：刺激が強いため少量から使用する。","aroma":"ミントガムを思わせる強い清涼感と、鼻に抜ける鋭く冷たい香り。","bodyConcern":"眠気・吐き気や乗り物酔いの不快感・緊張型の頭重感・暑さ｜短時間の芳香で気分をすっきりさせたいときに。乳幼児の顔周辺には使わない。","extraction":"水蒸気蒸留法","family":"シソ科","imageIndex":4},{"name":"ユーカリ","latin":"Eucalyptus globulus","cat":"樹木・樹脂","scent":"クリアで鋭い","note":"トップノート","key":"1,8-シネオール","level":2,"effect":"心：頭をクリアにして作業へ切り替えたいときに。｜身体：鼻やのどをすっきり感じたい季節の芳香に。｜注意：刺激を感じやすい人や乳幼児の周囲では慎重に。","aroma":"森林の葉を揉んだような、シャープで透明感のあるカンファー調の香り。","bodyConcern":"鼻づまり感・のどの不快感・頭がぼんやりする感じ｜季節性の不快感があるときの短時間の芳香に。呼吸器症状が強い場合は受診する。","extraction":"水蒸気蒸留法","family":"フトモモ科","imageIndex":5},{"name":"ラベンダー","latin":"Lavandula angustifolia","cat":"フローラル","scent":"やさしくハーバル","note":"ミドルノート","key":"酢酸リナリル","level":2,"effect":"心：緊張をほどき、穏やかな休息へ導く。｜身体：就寝前や疲れた日のリラックスタイムに。｜美容：肌を健やかに保つケアで広く親しまれる。","aroma":"やわらかな花の甘さに、草原を思わせるハーブの爽やかさが重なる香り。","bodyConcern":"寝つきの悪さ・緊張性の頭重感・肩のこわばり・軽い肌荒れ｜休息前の芳香、温湿布、希釈したスキンケアで広く用いられる。","extraction":"水蒸気蒸留法","family":"シソ科","imageIndex":6},{"name":"レモン","latin":"Citrus limon","cat":"柑橘系","scent":"フレッシュで明るい","note":"トップノート","key":"リモネン","level":2,"effect":"心：集中力を保ち、頭をすっきりさせたいときに。｜暮らし：勉強部屋や掃除後の空間芳香に。｜注意：圧搾法の精油は肌への使用後、紫外線を避ける。","aroma":"果皮を搾った瞬間のような、酸味を感じる明るくキリッとした香り。","bodyConcern":"眠気・集中力低下・食欲低下・室内のこもった不快感｜朝や勉強中の芳香に。皮膚使用後の紫外線に注意する。","extraction":"圧搾法","family":"ミカン科","imageIndex":7},{"name":"ローズ（アブソリュート）","latin":"Rosa centifolia","cat":"フローラル","scent":"濃厚で甘い花","note":"ミドルノート","key":"フェニルエチルアルコール","level":2,"effect":"心：悲しみや自信を失ったとき、気持ちをやさしく包む芳香に。｜美容：乾燥肌のぜいたくなケアに。｜特徴：溶剤抽出法で得る、濃厚で華やかな香り。","aroma":"蜜のような甘さと深みがある、重厚で濃密な生花のバラの香り。","bodyConcern":"月経前後の不快感・緊張・乾燥肌｜周期に伴う気分の落ち込みや、乾燥が気になるときの低濃度ケアに。","extraction":"揮発性有機溶剤抽出法","family":"バラ科","imageIndex":8},{"name":"ローズオットー","latin":"Rosa damascena","cat":"フローラル","scent":"上品で繊細な花","note":"ミドルノート","key":"シトロネロール","level":2,"effect":"心：心を落ち着かせ、幸福感や自信を取り戻したいときに。｜美容：乾燥・年齢肌のケアで親しまれる。｜特徴：水蒸気蒸留法で得られ、低温で固まることがある。","aroma":"朝露をまとったバラのような、みずみずしく上品で繊細な香り。","bodyConcern":"月経前後の不快感・更年期の揺らぎ・乾燥肌｜女性のライフステージに伴う緊張や乾燥をいたわる芳香・スキンケアに。","extraction":"水蒸気蒸留法","family":"バラ科","imageIndex":9}];
+const premiumTeasers=[{"name":"ローズマリー","latin":"Rosmarinus officinalis","cat":"ハーブ","level":2,"imageIndex":10,"locked":true},{"name":"イランイラン","latin":"Cananga odorata","cat":"フローラル","level":1,"imageIndex":11,"locked":true},{"name":"クラリセージ","latin":"Salvia sclarea","cat":"ハーブ","level":1,"imageIndex":12,"locked":true},{"name":"グレープフルーツ","latin":"Citrus paradisi","cat":"柑橘系","level":1,"imageIndex":13,"locked":true},{"name":"サイプレス","latin":"Cupressus sempervirens","cat":"樹木・樹脂","level":1,"imageIndex":14,"locked":true},{"name":"サンダルウッド","latin":"Santalum album","cat":"樹木・樹脂","level":1,"imageIndex":15,"locked":true},{"name":"ジャーマンカモミール","latin":"Matricaria chamomilla","cat":"フローラル","level":1,"imageIndex":16,"locked":true},{"name":"ジャスミン（アブソリュート）","latin":"Jasminum grandiflorum","cat":"フローラル","level":1,"imageIndex":17,"locked":true},{"name":"ジュニパーベリー","latin":"Juniperus communis","cat":"樹木・樹脂","level":1,"imageIndex":18,"locked":true},{"name":"スイートマージョラム","latin":"Origanum majorana","cat":"ハーブ","level":1,"imageIndex":19,"locked":true},{"name":"ネロリ","latin":"Citrus aurantium","cat":"フローラル","level":1,"imageIndex":20,"locked":true},{"name":"パチュリ","latin":"Pogostemon cablin","cat":"樹木・樹脂","level":1,"imageIndex":21,"locked":true},{"name":"ブラックペッパー","latin":"Piper nigrum","cat":"ハーブ","level":1,"imageIndex":22,"locked":true},{"name":"ベチバー","latin":"Vetiveria zizanioides","cat":"樹木・樹脂","level":1,"imageIndex":23,"locked":true},{"name":"ベルガモット","latin":"Citrus bergamia","cat":"柑橘系","level":1,"imageIndex":24,"locked":true},{"name":"ベンゾイン（レジノイド）","latin":"Styrax benzoin","cat":"樹木・樹脂","level":1,"imageIndex":25,"locked":true},{"name":"ミルラ","latin":"Commiphora myrrha","cat":"樹木・樹脂","level":1,"imageIndex":26,"locked":true},{"name":"メリッサ","latin":"Melissa officinalis","cat":"ハーブ","level":1,"imageIndex":27,"locked":true},{"name":"レモングラス","latin":"Cymbopogon citratus","cat":"ハーブ","level":1,"imageIndex":28,"locked":true},{"name":"ローマンカモミール","latin":"Chamaemelum nobile","cat":"フローラル","level":1,"imageIndex":29,"locked":true}];
+const $=s=>document.querySelector(s);
 const quizTopics={component:'主要成分',family:'科名',extraction:'抽出方法',symptom:'症状'};
-const FREE_OIL_COUNT=10;
-const accessPlan=new URLSearchParams(location.search).get('preview')==='premium'?'premium':'free';
+const localPreview=['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).get('preview')==='premium';
+let accessPlan='free',paymentsConfigured=false,premiumOils=[],filter='すべて',query='',flipped=new Set();
+let quizSettings={topic:'component',count:5},quizQuestions=[],quizIndex=0,answered=false,correct=0,quizStarted=false;
 const isPremium=()=>accessPlan==='premium';
+const fullOils=()=>isPremium()?[...freeOils,...premiumOils]:freeOils;
+const catalog=()=>isPremium()?fullOils():[...freeOils,...premiumTeasers];
 const hasQuizAccess=(topic,count)=>isPremium()||(topic==='component'&&count===5);
-let quizSettings={topic:isPremium()?'all':'component',count:5},quizQuestions=[],quizIndex=0,answered=false,correct=0,quizStarted=false;
 const shuffle=list=>[...list].sort(()=>Math.random()-.5);
-function renderCards(){let list=oils.filter(o=>(filter==='すべて'||o.cat===filter)&&(Object.values(o).join(' ')+' '+aromaDescriptions[o.name]+' '+bodyConcerns[o.name]+' '+plantFamilies[o.name]+' '+extractionMethods[o.name]).toLowerCase().includes(query.toLowerCase()));const available=list.filter(o=>isPremium()||oils.indexOf(o)<FREE_OIL_COUNT).length;$('#resultCount').textContent=isPremium()?`${list.length}種`:`${available}種を体験中`;$('#cardGrid').innerHTML=list.map(o=>{const [symptoms,detail]=bodyConcerns[o.name].split('｜'),index=oils.indexOf(o),col=index%5,row=Math.floor(index/5),locked=!isPremium()&&index>=FREE_OIL_COUNT;if(locked)return `<article class="oil-card locked-card" data-upgrade="card"><div class="locked-preview"><span class="oil-no">${String(index+1).padStart(2,'0')} / PREMIUM</span><span class="lock-icon">🔒</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><strong>有料版で詳しく見る</strong><small>科名・抽出方法・香り・身体への活用</small></div></article>`;return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><span class="level-badge">${o.level===2?'2級対象':'1級追加'}</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="card-meta"><span class="family"><small>植物科名</small>${plantFamilies[o.name]}</span><span class="extraction"><small>抽出方法</small>${extractionMethods[o.name]}</span></div><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${aromaDescriptions[o.name]}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${plantFamilies[o.name]}　<b>主な成分：</b>${o.key}</p><p class="extraction-detail"><b>抽出方法：</b>${extractionMethods[o.name]}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`}).join('');document.querySelectorAll('.oil-card:not(.locked-card)').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()});document.querySelectorAll('[data-upgrade]').forEach(c=>c.onclick=()=>showUpgrade(c.dataset.upgrade))}
+
+function renderCards(){
+ const list=catalog().filter(o=>{
+  const text=[o.name,o.latin,o.cat,o.scent,o.key,o.aroma,o.bodyConcern,o.family,o.extraction].filter(Boolean).join(' ').toLowerCase();
+  return(filter==='すべて'||o.cat===filter)&&text.includes(query.toLowerCase());
+ });
+ const available=list.filter(o=>!o.locked).length;
+ $('#resultCount').textContent=isPremium()?`${list.length}種`:`${available}種を体験中`;
+ $('#cardGrid').innerHTML=list.map(o=>{
+  const index=o.imageIndex,col=index%5,row=Math.floor(index/5);
+  if(o.locked)return `<article class="oil-card locked-card" data-upgrade="card"><div class="locked-preview"><span class="oil-no">${String(index+1).padStart(2,'0')} / PREMIUM</span><span class="lock-icon">🔒</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><strong>有料版で詳しく見る</strong><small>科名・抽出方法・香り・身体への活用</small></div></article>`;
+  const [symptoms,detail]=o.bodyConcern.split('｜');
+  return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><span class="level-badge">${o.level===2?'2級対象':'1級追加'}</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="card-meta"><span class="family"><small>植物科名</small>${o.family}</span><span class="extraction"><small>抽出方法</small>${o.extraction}</span></div><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${o.aroma}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${o.family}　<b>主な成分：</b>${o.key}</p><p class="extraction-detail"><b>抽出方法：</b>${o.extraction}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`;
+ }).join('');
+ document.querySelectorAll('.oil-card:not(.locked-card)').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()});
+ document.querySelectorAll('[data-upgrade]').forEach(c=>c.onclick=showUpgrade);
+}
+
 function makeQuestion(o,topic){
+ const oils=fullOils();
  const data={
   component:{prompt:`${o.name}の主な成分として覚えるものは？`,answer:o.key,pool:oils.map(x=>x.key)},
-  family:{prompt:`${o.name}の原料植物の科名は？`,answer:plantFamilies[o.name],pool:Object.values(plantFamilies)},
-  extraction:{prompt:`${o.name}の抽出方法は？`,answer:extractionMethods[o.name],pool:[...Object.values(extractionMethods),'油脂吸着法']},
-  symptom:{prompt:`${o.name}がセルフケアで選ばれることがある身体の不調は？`,answer:bodyConcerns[o.name].split('｜')[0],pool:Object.values(bodyConcerns).map(x=>x.split('｜')[0])}
+  family:{prompt:`${o.name}の原料植物の科名は？`,answer:o.family,pool:oils.map(x=>x.family)},
+  extraction:{prompt:`${o.name}の抽出方法は？`,answer:o.extraction,pool:[...oils.map(x=>x.extraction),'油脂吸着法']},
+  symptom:{prompt:`${o.name}がセルフケアで選ばれることがある身体の不調は？`,answer:o.bodyConcern.split('｜')[0],pool:oils.map(x=>x.bodyConcern.split('｜')[0])}
  }[topic];
  const distractors=shuffle([...new Set(data.pool.filter(x=>x!==data.answer))]).slice(0,3);
- return {...data,topic,oil:o.name,choices:shuffle([data.answer,...distractors])};
+ return{...data,topic,oil:o.name,choices:shuffle([data.answer,...distractors])};
 }
 function renderQuizSetup(){
  $('#score').textContent='設定';
- $('#quizContent').innerHTML=`<div class="quiz-setup"><div class="setup-group"><b>出題分野</b><div class="quiz-options">${[['all','全分野'],...Object.entries(quizTopics)].map(([v,l])=>{const locked=!isPremium()&&v!=='component';return `<button class="quiz-option ${quizSettings.topic===v?'active':''} ${locked?'premium-option':''}" data-topic="${v}" data-locked="${locked}">${locked?'🔒 ':''}${l}</button>`}).join('')}</div></div><div class="setup-group"><b>問題数</b><div class="quiz-options">${[5,10,20].map(n=>{const locked=!isPremium()&&n!==5;return `<button class="quiz-option ${quizSettings.count===n?'active':''} ${locked?'premium-option':''}" data-count="${n}" data-locked="${locked}">${locked?'🔒 ':''}${n}問</button>`}).join('')}</div></div><button class="start-quiz" id="startQuiz">この設定でスタート</button><p class="free-quiz-note">${isPremium()?'有料版：すべての分野と問題数を利用できます。':'無料版では主要成分・5問を体験できます。'}</p></div>`;
- document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{if(b.dataset.locked==='true')return showUpgrade('quiz-topic');quizSettings.topic=b.dataset.topic;renderQuizSetup()});
- document.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{if(b.dataset.locked==='true')return showUpgrade('quiz-count');quizSettings.count=Number(b.dataset.count);renderQuizSetup()});
+ $('#quizContent').innerHTML=`<div class="quiz-setup"><div class="setup-group"><b>出題分野</b><div class="quiz-options">${[['all','全分野'],...Object.entries(quizTopics)].map(([v,l])=>{const locked=!isPremium()&&v!=='component';return`<button class="quiz-option ${quizSettings.topic===v?'active':''} ${locked?'premium-option':''}" data-topic="${v}" data-locked="${locked}">${locked?'🔒 ':''}${l}</button>`}).join('')}</div></div><div class="setup-group"><b>問題数</b><div class="quiz-options">${[5,10,20].map(n=>{const locked=!isPremium()&&n!==5;return`<button class="quiz-option ${quizSettings.count===n?'active':''} ${locked?'premium-option':''}" data-count="${n}" data-locked="${locked}">${locked?'🔒 ':''}${n}問</button>`}).join('')}</div></div><button class="start-quiz" id="startQuiz">この設定でスタート</button><p class="free-quiz-note">${isPremium()?'有料版：すべての分野と問題数を利用できます。':'無料版では主要成分・5問を体験できます。'}</p></div>`;
+ document.querySelectorAll('[data-topic]').forEach(b=>b.onclick=()=>{if(b.dataset.locked==='true')return showUpgrade();quizSettings.topic=b.dataset.topic;renderQuizSetup()});
+ document.querySelectorAll('[data-count]').forEach(b=>b.onclick=()=>{if(b.dataset.locked==='true')return showUpgrade();quizSettings.count=Number(b.dataset.count);renderQuizSetup()});
  $('#startQuiz').onclick=startQuiz;
 }
 function startQuiz(){
- if(!hasQuizAccess(quizSettings.topic,quizSettings.count)){showUpgrade('quiz-start');return}
- const topics=quizSettings.topic==='all'?Object.keys(quizTopics):[quizSettings.topic];
- const oilOrder=shuffle(isPremium()?oils:oils.slice(0,FREE_OIL_COUNT)),topicOrder=shuffle(topics);
+ if(!hasQuizAccess(quizSettings.topic,quizSettings.count))return showUpgrade();
+ const topics=quizSettings.topic==='all'?Object.keys(quizTopics):[quizSettings.topic],oilOrder=shuffle(fullOils()),topicOrder=shuffle(topics);
  quizQuestions=Array.from({length:quizSettings.count},(_,i)=>makeQuestion(oilOrder[i%oilOrder.length],topicOrder[i%topicOrder.length]));
  quizIndex=0;correct=0;answered=false;quizStarted=true;renderQuiz();
 }
-function showUpgrade(){const modal=$('#upgradeModal');modal.hidden=false;document.body.classList.add('modal-open');$('#closeUpgrade').focus()}
-function closeUpgrade(){const modal=$('#upgradeModal');modal.hidden=true;document.body.classList.remove('modal-open')}
 function finishQuiz(){
- quizStarted=false;
- $('#score').textContent=`${correct} / ${quizSettings.count}`;
+ quizStarted=false;$('#score').textContent=`${correct} / ${quizSettings.count}`;
  const rate=Math.round(correct/quizSettings.count*100);
  $('#quizContent').innerHTML=`<div class="quiz-result"><span>${rate}%</span><h3>${correct} / ${quizSettings.count} 問正解</h3><p>${rate>=80?'よく定着しています。別の分野にも挑戦してみましょう。':rate>=60?'あと少しです。間違えた分野をカードで復習しましょう。':'カードを見直して、同じ分野でもう一度挑戦しましょう。'}</p><div><button class="start-quiz" id="retryQuiz">同じ設定でもう一度</button><button class="change-settings" id="changeSettings">設定を変更</button></div></div>`;
  $('#retryQuiz').onclick=startQuiz;$('#changeSettings').onclick=renderQuizSetup;
 }
 function renderQuiz(){
- if(!quizStarted){renderQuizSetup();return}
- if(quizIndex>=quizQuestions.length){finishQuiz();return}
- const q=quizQuestions[quizIndex];
- $('#score').textContent=`${quizIndex+1} / ${quizSettings.count}`;
- $('#quizContent').innerHTML=`<div class="quiz-progress"><span style="width:${(quizIndex/quizSettings.count)*100}%"></span></div><span class="topic-label">${quizTopics[q.topic]}</span><p class="question">${q.prompt}</p><div class="answers">${q.choices.map(a=>`<button class="answer" data-answer="${a}">${a}</button>`).join('')}</div><div id="quizFeedback"></div>`;
- document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{
-  if(answered)return;answered=true;
-  const isCorrect=b.dataset.answer===q.answer;
-  if(isCorrect){correct++;b.classList.add('correct');localStorage.setItem('aromaTotalCorrect',Number(localStorage.getItem('aromaTotalCorrect')||0)+1)}
-  else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===q.answer&&x.classList.add('correct'))}
-  $('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;
-  $('#quizFeedback').innerHTML=`<p class="quiz-feedback ${isCorrect?'ok':'ng'}">${isCorrect?'正解！':`正解：${q.answer}`}</p><button class="next" id="next">${quizIndex+1===quizSettings.count?'結果を見る':'次の問題へ →'}</button>`;
-  $('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()};
- });
+ if(!quizStarted)return renderQuizSetup();if(quizIndex>=quizQuestions.length)return finishQuiz();
+ const q=quizQuestions[quizIndex];$('#score').textContent=`${quizIndex+1} / ${quizSettings.count}`;
+ $('#quizContent').innerHTML=`<div class="quiz-progress"><span style="width:${quizIndex/quizSettings.count*100}%"></span></div><span class="topic-label">${quizTopics[q.topic]}</span><p class="question">${q.prompt}</p><div class="answers">${q.choices.map(a=>`<button class="answer" data-answer="${a}">${a}</button>`).join('')}</div><div id="quizFeedback"></div>`;
+ document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const ok=b.dataset.answer===q.answer;if(ok){correct++;b.classList.add('correct');localStorage.setItem('aromaTotalCorrect',Number(localStorage.getItem('aromaTotalCorrect')||0)+1)}else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===q.answer&&x.classList.add('correct'))}$('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;$('#quizFeedback').innerHTML=`<p class="quiz-feedback ${ok?'ok':'ng'}">${ok?'正解！':`正解：${q.answer}`}</p><button class="next" id="next">${quizIndex+1===quizSettings.count?'結果を見る':'次の問題へ →'}</button>`;$('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()}});
 }
-document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=showUpgrade;$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};$('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;$('#planBadge').textContent=isPremium()?'有料版プレビュー':'無料版';$('#upgradeBtn').hidden=isPremium();$('#accessNotice').innerHTML=isPremium()?'有料版プレビュー：30種類と全クイズを利用できます。':`無料版では10種類を体験できます。<button id="noticeUpgrade">残り20種類を開放</button>`;if($('#noticeUpgrade'))$('#noticeUpgrade').onclick=showUpgrade;renderCards();
+
+function showUpgrade(){$('#upgradeModal').hidden=false;document.body.classList.add('modal-open');$('#closeUpgrade').focus()}
+function closeUpgrade(){$('#upgradeModal').hidden=true;document.body.classList.remove('modal-open')}
+function showStatus(message,type='info'){const el=$('#appStatus');el.textContent=message;el.dataset.type=type;el.hidden=false}
+function renderAccessUi(email=null){
+ $('#planBadge').textContent=isPremium()?'有料版':'無料版';$('#upgradeBtn').hidden=isPremium();$('#accountBtn').hidden=isPremium();$('#logoutBtn').hidden=!isPremium();
+ $('#accessNotice').innerHTML=isPremium()?`有料版：30種類と全クイズを利用できます。${email?` <small>${email}</small>`:''}`:`無料版では10種類を体験できます。<button id="noticeUpgrade">残り20種類を開放</button>`;
+ if($('#noticeUpgrade'))$('#noticeUpgrade').onclick=showUpgrade;
+}
+async function beginCheckout(){
+ const b=$('#checkoutButton');b.disabled=true;b.textContent='決済画面を準備しています…';$('#checkoutMessage').textContent='';
+ try{const r=await fetch('/api/checkout',{method:'POST'}),data=await r.json();if(!r.ok||!data.url)throw new Error(data.error||'checkout_failed');location.assign(data.url)}
+ catch(e){$('#checkoutMessage').textContent=e.message==='payments_not_configured'?'決済の初期設定中です。しばらくしてからもう一度お試しください。':'決済画面を開けませんでした。時間をおいてお試しください。';b.disabled=false;b.textContent='有料版を購入する'}
+}
+async function requestRestore(e){
+ e.preventDefault();const b=$('#restoreButton'),m=$('#restoreMessage');b.disabled=true;m.textContent='確認しています…';
+ try{const r=await fetch('/api/restore/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#restoreEmail').value})}),data=await r.json();if(!r.ok)throw new Error(data.error||'restore_failed');m.textContent='購入履歴がある場合、復元用メールを送信しました。'}
+ catch(e){m.textContent=e.message==='restore_not_configured'?'メールでの購入復元は現在準備中です。':'復元メールを送信できませんでした。時間をおいてお試しください。'}finally{b.disabled=false}
+}
+async function loadAccess(){
+ const suffix=localPreview?'?preview=premium':'';
+ try{const r=await fetch(`/api/session${suffix}`,{credentials:'same-origin'});if(!r.ok)return;const session=await r.json();paymentsConfigured=session.configured;if(session.plan==='premium'){const cr=await fetch(`/api/premium-data${suffix}`,{credentials:'same-origin'});if(!cr.ok)throw new Error();premiumOils=(await cr.json()).oils;accessPlan='premium';quizSettings={topic:'all',count:5};renderAccessUi(session.email);renderCards();if($('#quizView').classList.contains('active'))renderQuizSetup()}}catch{showStatus('会員情報を確認できなかったため、無料版を表示しています。','warning')}
+ $('#checkoutButton').disabled=!paymentsConfigured;if(!paymentsConfigured)$('#checkoutButton').textContent='決済の初期設定中';
+}
+function showReturnStatus(){const p=new URLSearchParams(location.search),c=p.get('checkout'),r=p.get('restore');if(c==='success')showStatus('ご購入ありがとうございます。有料版を開放しました。','success');else if(c==='cancelled')showStatus('決済はキャンセルされました。料金は発生していません。');else if(c)showStatus('購入状態を確認できませんでした。サポートへお問い合わせください。','warning');if(r==='success')showStatus('購入済みアクセスを復元しました。','success');else if(r==='invalid')showStatus('復元リンクが無効または期限切れです。','warning')}
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});
+document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});
+$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=showUpgrade;$('#accountBtn').onclick=showUpgrade;$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};
+$('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;renderAccessUi();renderCards();showReturnStatus();loadAccess();

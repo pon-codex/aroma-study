@@ -131,6 +131,19 @@
 .plan-comparison ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 11px; line-height: 2; }
 .premium-plan { border-color: var(--sage) !important; background: #f1f5ef; }
 .premium-plan > span { position: absolute; top: -10px; right: 12px; padding: 4px 9px; border-radius: 12px; background: var(--gold); color: #fff; font-size: 9px; font-weight: 700; }
-.checkout-button { width: 100%; margin-top: 18px; padding: 12px; border: 0; border-radius: 24px; background: #aeb7b2; color: #fff; font-weight: 700; }
+.checkout-button { width: 100%; margin-top: 18px; padding: 12px; border: 0; border-radius: 24px; background: var(--deep); color: #fff; cursor: pointer; font-weight: 700; }
+.checkout-button:disabled { background: #aeb7b2; cursor: not-allowed; }
 .modal-note { margin: 8px 0 0; color: var(--muted); text-align: center; font-size: 9px; }
+.restore-panel { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.restore-panel h3 { margin: 0 0 4px; font-size: 14px; }
+.restore-panel > p { margin: 0 0 10px; color: var(--muted); font-size: 11px; }
+.restore-panel label { display: block; margin-bottom: 5px; color: var(--deep); font-size: 10px; font-weight: 700; }
+.restore-panel form > div { display: flex; gap: 7px; }
+.restore-panel input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: #fff; font: inherit; font-size: 12px; }
+.restore-panel button { padding: 10px 13px; border: 1px solid var(--deep); border-radius: 9px; background: #fff; color: var(--deep); cursor: pointer; font-size: 11px; font-weight: 700; }
+.restore-panel button:disabled { opacity: .55; cursor: wait; }
+.app-status { margin: 18px 0 -8px; padding: 11px 14px; border: 1px solid #cbd8cf; border-radius: 9px; background: #edf5ef; color: var(--deep); font-size: 12px; }
+.app-status[data-type="warning"] { border-color: #e4d4b7; background: #fff8e8; color: #795c2e; }
+.app-status[data-type="success"] { border-color: #bfd6c4; background: #eaf6ed; color: #315f3b; }
 @media(max-width:600px) { .header-actions .plan-badge,.header-actions .ghost { display:none; } .plan-comparison { grid-template-columns:1fr; } .upgrade-modal { padding: 25px 20px; } }
+@media(max-width:600px) { .restore-panel form > div { display:grid; } }
