@@ -76,7 +76,7 @@ function renderAccessUi(email=null){
 async function beginCheckout(){
  const b=$('#checkoutButton');b.disabled=true;b.textContent='決済画面を準備しています…';$('#checkoutMessage').textContent='';
  try{const r=await fetch('/api/checkout',{method:'POST'}),data=await r.json();if(!r.ok||!data.url)throw new Error(data.error||'checkout_failed');location.assign(data.url)}
- catch(e){$('#checkoutMessage').textContent=e.message==='payments_not_configured'?'決済の初期設定中です。しばらくしてからもう一度お試しください。':'決済画面を開けませんでした。時間をおいてお試しください。';b.disabled=false;b.textContent='有料版を購入する'}
+ catch(e){$('#checkoutMessage').textContent=e.message==='payments_not_configured'?'決済の初期設定中です。しばらくしてからもう一度お試しください。':'決済画面を開けませんでした。時間をおいてお試しください。';b.disabled=false;b.textContent='550円で有料版を購入する'}
 }
 async function requestRestore(e){
  e.preventDefault();const b=$('#restoreButton'),m=$('#restoreMessage');b.disabled=true;m.textContent='確認しています…';
@@ -86,7 +86,7 @@ async function requestRestore(e){
 async function loadAccess(){
  const suffix=localPreview?'?preview=premium':'';
  try{const r=await fetch(`/api/session${suffix}`,{credentials:'same-origin'});if(!r.ok)return;const session=await r.json();paymentsConfigured=session.configured;if(session.plan==='premium'){const cr=await fetch(`/api/premium-data${suffix}`,{credentials:'same-origin'});if(!cr.ok)throw new Error();premiumOils=(await cr.json()).oils;accessPlan='premium';quizSettings={topic:'all',count:5};renderAccessUi(session.email);renderCards();if($('#quizView').classList.contains('active'))renderQuizSetup()}}catch{showStatus('会員情報を確認できなかったため、無料版を表示しています。','warning')}
- $('#checkoutButton').disabled=!paymentsConfigured;$('#checkoutButton').textContent=paymentsConfigured?'有料版を購入する':'決済の初期設定中';
+ $('#checkoutButton').disabled=!paymentsConfigured;$('#checkoutButton').textContent=paymentsConfigured?'550円で有料版を購入する':'決済の初期設定中';
 }
 function showReturnStatus(){const p=new URLSearchParams(location.search),c=p.get('checkout'),r=p.get('restore');if(c==='success')showStatus('ご購入ありがとうございます。有料版を開放しました。','success');else if(c==='pending')showStatus('お支払いを受け付けました。入金確認後に有料版を開放します。','info');else if(c==='cancelled')showStatus('決済はキャンセルされました。料金は発生していません。');else if(c)showStatus('購入状態を確認できませんでした。サポートへお問い合わせください。','warning');if(r==='success')showStatus('購入済みアクセスを復元しました。','success');else if(r==='invalid')showStatus('復元リンクが無効または期限切れです。','warning')}
 

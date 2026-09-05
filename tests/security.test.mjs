@@ -39,3 +39,11 @@ test("the free and premium oil ranges stay at 10 and 30", () => {
   assert.equal((client.match(/"name":"/g) ?? []).length, 30);
   assert.equal((premium.match(/^    "name":/gm) ?? []).length, 20);
 });
+
+test("opening offer clearly states its price and upgrade policy", () => {
+  assert.match(html, /オープニング限定/);
+  assert.match(html, /¥550/);
+  assert.match(html, /追加料金なし/);
+  assert.match(html, /追加後は ¥880 を予定/);
+  assert.doesNotMatch(html, /¥1,480/);
+});

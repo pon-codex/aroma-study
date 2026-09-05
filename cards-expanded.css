@@ -120,6 +120,8 @@
 .plan-comparison ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 11px; line-height: 2; }
 .premium-plan { border-color: var(--sage) !important; background: #f1f5ef; }
 .premium-plan > span { position: absolute; top: -10px; right: 12px; padding: 4px 9px; border-radius: 12px; background: var(--gold); color: #fff; font-size: 9px; font-weight: 700; }
+.future-price { margin: -8px 0 10px; color: var(--muted); font-size: 9px; line-height: 1.5; }
+.opening-note { margin: 14px 4px 0; padding: 11px 13px; border-radius: 10px; background: #f8f2e5; color: var(--deep); font-size: 10px; line-height: 1.75; }
 .checkout-button { width: 100%; margin-top: 18px; padding: 12px; border: 0; border-radius: 24px; background: var(--deep); color: #fff; cursor: pointer; font-weight: 700; }
 .checkout-button:disabled { background: #aeb7b2; cursor: not-allowed; }
 .modal-note { margin: 8px 0 0; color: var(--muted); text-align: center; font-size: 9px; }
