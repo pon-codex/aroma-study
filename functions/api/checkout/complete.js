@@ -18,7 +18,16 @@ export async function onRequestGet({ request, env }) {
     apiVersion: "2026-07-29.dahlia",
     httpClient: Stripe.createFetchHttpClient(),
   });
-  const checkoutSession = await stripeClient.checkout.sessions.retrieve(sessionId);
+  let checkoutSession;
+  try {
+    checkoutSession = await stripeClient.checkout.sessions.retrieve(sessionId);
+  } catch (error) {
+    console.error("stripe_checkout_retrieve_failed", error?.type || "unknown");
+    return Response.redirect(`${origin}/?checkout=invalid`, 303);
+  }
+  if (checkoutSession.payment_status === "unpaid") {
+    return Response.redirect(`${origin}/?checkout=pending`, 303);
+  }
   if (checkoutSession.payment_status !== "paid"
     || checkoutSession.metadata?.product_key !== "premium_lifetime") {
     return Response.redirect(`${origin}/?checkout=unpaid`, 303);

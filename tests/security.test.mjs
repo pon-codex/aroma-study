@@ -23,6 +23,13 @@ test("API calls never embed a Stripe secret in client-side code", () => {
   assert.doesNotMatch(client, /[sr]k_(?:test|live)_/);
 });
 
+test("Checkout uses a server-side Stripe Price and dynamic payment methods", async () => {
+  const checkout = await readFile(new URL("../functions/api/checkout.js", import.meta.url), "utf8");
+  assert.match(checkout, /price: env\.STRIPE_PRICE_ID/);
+  assert.doesNotMatch(checkout, /payment_method_types|price_data|unit_amount/);
+  assert.match(checkout, /integration_identifier/);
+});
+
 test("exam levels are not used in the learning app", () => {
   const appContent = [client, premium, html, manifest].join("\n");
   assert.doesNotMatch(appContent, /(?:アロマテラピー)?\u691c\u5b9a|[\uff11\uff1212]\u7d1a|level-badge|[".]level/);

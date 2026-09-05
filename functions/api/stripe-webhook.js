@@ -27,7 +27,8 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "invalid_signature" }, 400);
   }
 
-  if (event.type === "checkout.session.completed") {
+  if (["checkout.session.completed", "checkout.session.async_payment_succeeded"]
+    .includes(event.type)) {
     const session = event.data.object;
     if (session.payment_status === "paid"
       && session.metadata?.product_key === "premium_lifetime") {

@@ -15,6 +15,9 @@ export async function onRequestGet({ request, env }) {
   return json({
     plan: session?.plan === "premium" ? "premium" : "free",
     email: session?.email || null,
-    configured: Boolean(env.STRIPE_RESTRICTED_KEY && env.STRIPE_WEBHOOK_SECRET && env.DB),
+    configured: Boolean(
+      env.STRIPE_RESTRICTED_KEY && env.STRIPE_WEBHOOK_SECRET
+      && env.STRIPE_PRICE_ID && env.DB,
+    ),
   });
 }

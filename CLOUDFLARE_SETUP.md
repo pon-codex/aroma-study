@@ -17,18 +17,21 @@
 3. Pagesの暗号化された環境変数へ以下を登録する。
    - `STRIPE_RESTRICTED_KEY`
    - `STRIPE_WEBHOOK_SECRET`
+   - `STRIPE_PRICE_ID`
    - `PUBLIC_APP_URL=https://aroma-study.pages.dev`
    - `RESEND_API_KEY`
    - `AROMA_FROM_EMAIL`
 4. Stripe Webhookの送信先を `https://aroma-study.pages.dev/api/stripe-webhook` に設定する。
-5. Webhookイベントとして `checkout.session.completed` と `charge.refunded` を選ぶ。
+5. Webhookイベントとして `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`charge.refunded` を選ぶ。
 
 StripeキーとWebhookシークレットは、ソースコードやGitHubへ保存しない。
 
 ## Stripe制限付きキーの最小権限
 
 - Checkout Sessions: Write
-- Customers: Read
+- Customers: Write
+- Prices: Read
+- Products: Read
 
 最初はStripeのテストモードで確認し、購入・購入復元・全額返金による権限停止を確認してから本番キーへ切り替える。
 
