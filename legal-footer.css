@@ -1,0 +1,6 @@
+footer{padding:28px 24px 34px;border-top:1px solid var(--line)}
+footer p{max-width:860px;margin:4px auto}
+.legal-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 20px;margin:18px 0 8px}
+.legal-links a{color:var(--deep);text-underline-offset:3px}
+.copyright{font-family:'DM Sans',sans-serif}
+@media(max-width:600px){.legal-links{display:grid;gap:7px}}
