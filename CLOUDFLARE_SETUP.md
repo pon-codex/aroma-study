@@ -19,10 +19,10 @@
    - `STRIPE_RESTRICTED_KEY`
    - `STRIPE_WEBHOOK_SECRET`
    - `STRIPE_PRICE_ID`
-   - `PUBLIC_APP_URL=https://aroma-study.pages.dev`
+   - `PUBLIC_APP_URL=https://seiyu-shiori.com`
    - `RESEND_API_KEY`
    - `AROMA_FROM_EMAIL`
-4. Stripe Webhookの送信先を `https://aroma-study.pages.dev/api/stripe-webhook` に設定する。
+4. Stripe Webhookの送信先を `https://seiyu-shiori.com/api/stripe-webhook` に設定する。
 5. Webhookイベントとして `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`charge.refunded` を選ぶ。
 
 StripeキーとWebhookシークレットは、ソースコードやGitHubへ保存しない。
