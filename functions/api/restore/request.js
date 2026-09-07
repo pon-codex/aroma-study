@@ -51,7 +51,7 @@ export async function onRequestPost({ request, env }) {
       body: JSON.stringify({
         from: env.AROMA_FROM_EMAIL,
         to: [email],
-        subject: "香りのノート｜購入済みアクセスの復元",
+        subject: "精油の栞｜購入済みアクセスの復元",
         html: `<p>次のリンクから有料版へのアクセスを復元できます。</p><p><a href="${link}">有料版を開く</a></p><p>このリンクは15分間有効です。</p>`,
       }),
     });
