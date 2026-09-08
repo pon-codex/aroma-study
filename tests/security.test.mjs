@@ -32,6 +32,9 @@ test("legal pages are linked and cover the paid service", () => {
   assert.match(privacy, /Resend/);
   assert.match(commercial, /550円/);
   assert.match(commercial, /買い切り|継続課金ではありません/);
+  assert.match(commercial, /申込期間/);
+  assert.match(terms, /全額返金/);
+  assert.match(privacy, /広告メールを送信することはありません/);
 });
 
 test("API calls never embed a Stripe secret in client-side code", () => {
