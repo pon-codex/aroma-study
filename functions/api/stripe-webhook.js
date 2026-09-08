@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { grantPremium, revokeByPaymentIntent } from "../lib/entitlements.js";
+import { sendPurchaseEmailOnce } from "../lib/email.js";
 import { json } from "../lib/http.js";
 
 export async function onRequestPost({ request, env }) {
@@ -33,6 +34,12 @@ export async function onRequestPost({ request, env }) {
     if (session.payment_status === "paid"
       && session.metadata?.product_key === "premium_lifetime") {
       await grantPremium(env.DB, session);
+      await sendPurchaseEmailOnce(
+        env.DB,
+        env,
+        session,
+        env.PUBLIC_APP_URL || new URL(request.url).origin,
+      );
     }
   }
 

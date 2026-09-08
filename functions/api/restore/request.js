@@ -1,4 +1,5 @@
 import { normalizeEmail } from "../../lib/entitlements.js";
+import { sendRestoreEmail } from "../../lib/email.js";
 import { json, publicOrigin, requireSameOrigin } from "../../lib/http.js";
 import { hashToken } from "../../lib/session.js";
 
@@ -42,20 +43,11 @@ export async function onRequestPost({ request, env }) {
       "INSERT INTO login_tokens (token_hash, email, expires_at) VALUES (?, ?, ?)",
     ).bind(tokenHash, email, expiresAt).run();
     const link = `${publicOrigin(request, env)}/api/restore/verify?token=${token}`;
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        authorization: `Bearer ${env.RESEND_API_KEY}`,
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        from: env.AROMA_FROM_EMAIL,
-        to: [email],
-        subject: "精油の栞｜購入済みアクセスの復元",
-        html: `<p>次のリンクから有料版へのアクセスを復元できます。</p><p><a href="${link}">有料版を開く</a></p><p>このリンクは15分間有効です。</p>`,
-      }),
-    });
-    if (!response.ok) console.error("restore_email_delivery_failed", response.status);
+    try {
+      await sendRestoreEmail(env, email, link);
+    } catch (error) {
+      console.error("restore_email_delivery_failed", error?.message || "unknown");
+    }
   }
 
   return json({ ok: true });

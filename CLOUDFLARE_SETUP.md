@@ -7,14 +7,14 @@
 - Stripe Webhookによる購入権限の付与と全額返金時の停止
 - HttpOnly Cookieによる30日間のログインセッション
 - D1での顧客・購入権限・セッション管理
-- 購入済みメールアドレスへの復元リンク送信
+- 購入完了メールと、購入済みメールアドレスへの復元リンク送信
 - 有料精油データを認証必須APIへ分離
 - 本番環境で `?preview=premium` を無効化
 
 ## Cloudflareに必要な設定
 
 1. D1データベースを作成し、Pagesプロジェクトへ変数名 `DB` で接続する。
-2. `migrations/0001_entitlements.sql` をD1へ適用する。
+2. `migrations/0001_entitlements.sql` と `migrations/0002_email_deliveries.sql` を順番にD1へ適用する。
 3. Pagesの暗号化された環境変数へ以下を登録する。
    - `STRIPE_RESTRICTED_KEY`
    - `STRIPE_WEBHOOK_SECRET`
@@ -39,6 +39,8 @@ StripeキーとWebhookシークレットは、ソースコードやGitHubへ保�
 ## メール復元
 
 復元機能はResendのHTTPS APIを使用する。`AROMA_FROM_EMAIL` にはResendで認証済みの送信元を設定する。購入履歴の有無は画面上で区別せず、メールアドレスの照合結果が第三者へ漏れないようにしている。
+
+購入完了メールはStripe Webhookから送信する。`email_deliveries` テーブルの決済セッション単位のキーで、Webhook再送時の重複メールを防止する。
 
 ## 開発者プレビュー
 

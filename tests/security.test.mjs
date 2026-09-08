@@ -62,3 +62,14 @@ test("opening offer clearly states its price and upgrade policy", () => {
   assert.match(html, /追加後は ¥880 を予定/);
   assert.doesNotMatch(html, /¥1,480/);
 });
+
+test("transactional emails include support and safe purchase guidance", async () => {
+  const email = await readFile(new URL("../functions/lib/email.js", import.meta.url), "utf8");
+  const webhook = await readFile(new URL("../functions/api/stripe-webhook.js", import.meta.url), "utf8");
+  assert.match(email, /support@seiyu-shiori\.com/);
+  assert.match(email, /15分/);
+  assert.match(email, /買い切り/);
+  assert.match(email, /email_deliveries/);
+  assert.match(webhook, /sendPurchaseEmailOnce/);
+  assert.doesNotMatch(email, /[sr]k_(?:test|live)_/);
+});
