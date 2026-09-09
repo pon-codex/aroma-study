@@ -72,8 +72,10 @@ function startQuiz(){
 function finishQuiz(){
  quizStarted=false;$('#score').textContent=`${correct} / ${quizSettings.count}`;
  const rate=Math.round(correct/quizSettings.count*100);
- $('#quizContent').innerHTML=`<div class="quiz-result"><span>${rate}%</span><h3>${correct} / ${quizSettings.count} 問正解</h3><p>${rate>=80?'よく定着しています。別の分野にも挑戦してみましょう。':rate>=60?'あと少しです。間違えた分野をカードで復習しましょう。':'カードを見直して、同じ分野でもう一度挑戦しましょう。'}</p><div><button class="start-quiz" id="retryQuiz">同じ設定でもう一度</button><button class="change-settings" id="changeSettings">設定を変更</button></div></div>`;
+ const premiumPrompt=isPremium()?'':`<aside class="quiz-upgrade"><b>次は4分野で定着を確認</b><p>有料版では、科名・抽出方法・症状のクイズと10問・20問モードも選べます。</p><button type="button" id="resultUpgrade">有料版の詳細を見る</button></aside>`;
+ $('#quizContent').innerHTML=`<div class="quiz-result"><span>${rate}%</span><h3>${correct} / ${quizSettings.count} 問正解</h3><p>${rate>=80?'よく定着しています。別の分野にも挑戦してみましょう。':rate>=60?'あと少しです。間違えた分野をカードで復習しましょう。':'カードを見直して、同じ分野でもう一度挑戦しましょう。'}</p><div><button class="start-quiz" id="retryQuiz">同じ設定でもう一度</button><button class="change-settings" id="changeSettings">設定を変更</button></div>${premiumPrompt}</div>`;
  $('#retryQuiz').onclick=startQuiz;$('#changeSettings').onclick=renderQuizSetup;
+ if($('#resultUpgrade'))$('#resultUpgrade').onclick=()=>showUpgrade('quiz_result');
 }
 function renderQuiz(){
  if(!quizStarted)return renderQuizSetup();if(quizIndex>=quizQuestions.length)return finishQuiz();
@@ -87,6 +89,7 @@ function closeUpgrade(){$('#upgradeModal').hidden=true;document.body.classList.r
 function showStatus(message,type='info'){const el=$('#appStatus');el.textContent=message;el.dataset.type=type;el.hidden=false}
 function renderAccessUi(email=null){
  $('#planBadge').textContent=isPremium()?'有料版':'無料版';$('#upgradeBtn').hidden=isPremium();$('#accountBtn').hidden=isPremium();$('#logoutBtn').hidden=!isPremium();
+ $('#premiumSummary').hidden=isPremium();
  $('#accessNotice').innerHTML=isPremium()?`有料版：30種類と全クイズを利用できます。${email?` <small>${escapeHtml(email)}</small>`:''}`:`無料版では10種類を体験できます。<button id="noticeUpgrade">残り20種類を開放</button>`;
  if($('#noticeUpgrade'))$('#noticeUpgrade').onclick=showUpgrade;
 }
@@ -110,6 +113,6 @@ function showReturnStatus(){const p=new URLSearchParams(location.search),c=p.get
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});
-$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=()=>showUpgrade('header');$('#accountBtn').onclick=()=>showUpgrade('restore_header');$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};
+$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=()=>showUpgrade('header');$('#accountBtn').onclick=()=>showUpgrade('restore_header');$('#summaryUpgradeBtn').onclick=()=>showUpgrade('comparison');$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};
 $('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;renderAccessUi();renderCards();showReturnStatus();loadAccess();
 trackEventOnce('app_view','seiyuShioriAppViewTracked');

@@ -69,6 +69,12 @@ test("opening offer clearly states its price and upgrade policy", () => {
   assert.match(html, /購入により.*利用規約/);
   assert.match(html, /追加後は ¥880 を予定/);
   assert.doesNotMatch(html, /¥1,480/);
+  assert.match(html, /無料で試して、必要になったら30種へ/);
+  assert.match(html, /購入時のメールアドレスで別端末でも復元/);
+  assert.match(html, /よくある質問/);
+  assert.match(client, /showUpgrade\('quiz_result'\)/);
+  assert.match(client, /showUpgrade\('comparison'\)/);
+  assert.match(html, /app\.js\?v=conversion-20260909/);
 });
 
 test("transactional emails include support and safe purchase guidance", async () => {
@@ -120,7 +126,6 @@ test("anonymous funnel analytics excludes personal and study-answer data", async
   assert.doesNotMatch(analytics, /email|quiz_answer|search_query/i);
   assert.match(privacy, /匿名のセッション識別子/);
   assert.match(privacy, /クイズで選んだ回答.*サーバーへ送信しません/);
-  assert.match(html, /app\.js\?v=growth-20260909/);
 });
 
 test("analytics API accepts only same-origin whitelisted anonymous events", async () => {
