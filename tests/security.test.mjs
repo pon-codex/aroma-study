@@ -106,10 +106,12 @@ test("scroll-to-top control appears after the second card threshold", () => {
   assert.match(html, /aria-label="画面の一番上へ戻る"/);
   assert.match(client, /cards\[1\]/);
   assert.match(client, /window\.scrollY<scrollTopThreshold/);
-  assert.match(client, /scrollTo\(\{top:0,behavior:'auto'\}\)/);
+  assert.match(client, /function scrollToTopWithEase/);
+  assert.match(client, /1-Math\.pow\(1-progress,4\)/);
+  assert.match(client, /prefers-reduced-motion: reduce/);
   assert.match(expandedStyles, /\.scroll-top-button/);
   assert.match(html, /cards-expanded\.css\?v=scroll-top-20260909/);
-  assert.match(html, /app\.js\?v=scroll-top-20260909/);
+  assert.match(html, /app\.js\?v=scroll-ease-20260909/);
 });
 
 test("health check exposes status codes without configuration details", async () => {
