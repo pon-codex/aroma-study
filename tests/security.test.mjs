@@ -93,3 +93,9 @@ test("health check exposes status codes without configuration details", async ()
   assert.match(health, /SELECT 1 AS ok/);
   assert.doesNotMatch(health, /JSON\.stringify|env\[[^\]]+\]|Object\.keys\(env\)/);
 });
+
+test("social sharing metadata uses the production domain and preview image", () => {
+  assert.match(html, /<link rel="canonical" href="https:\/\/seiyu-shiori\.com\/"/);
+  assert.match(html, /property="og:image" content="https:\/\/seiyu-shiori\.com\/social-preview\.png"/);
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
+});
