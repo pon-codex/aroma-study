@@ -74,7 +74,6 @@ test("opening offer clearly states its price and upgrade policy", () => {
   assert.match(html, /よくある質問/);
   assert.match(client, /showUpgrade\('quiz_result'\)/);
   assert.match(client, /showUpgrade\('comparison'\)/);
-  assert.match(html, /app\.js\?v=conversion-20260909/);
 });
 
 test("transactional emails include support and safe purchase guidance", async () => {
@@ -92,6 +91,16 @@ test("mobile layout keeps account recovery controls available", () => {
   assert.match(expandedStyles, /\.header-actions \.ghost \{ display: inline-block/);
   assert.match(expandedStyles, /\.header-actions #resetBtn \{ display: none/);
   assert.match(expandedStyles, /\.header-actions \.ghost\[hidden\] \{ display: none/);
+});
+
+test("mobile users receive platform-specific home screen guidance", () => {
+  assert.match(html, /ホーム画面から、アプリのように使えます/);
+  assert.match(client, /Safariの共有ボタン/);
+  assert.match(client, /アプリをインストール/);
+  assert.match(client, /display-mode: standalone/);
+  assert.match(expandedStyles, /\.install-hint\.is-visible/);
+  assert.match(html, /cards-expanded\.css\?v=install-hint-20260909/);
+  assert.match(html, /app\.js\?v=install-hint-20260909/);
 });
 
 test("health check exposes status codes without configuration details", async () => {
