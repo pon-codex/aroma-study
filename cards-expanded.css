@@ -138,3 +138,17 @@
 .app-status[data-type="success"] { border-color: #bfd6c4; background: #eaf6ed; color: #315f3b; }
 @media(max-width:600px) { .header-actions .plan-badge,.header-actions .ghost { display:none; } .plan-comparison { grid-template-columns:1fr; } .upgrade-modal { padding: 25px 20px; } }
 @media(max-width:600px) { .restore-panel form > div { display:grid; } }
+@media(max-width:600px) {
+  .topbar { padding: 0 14px; }
+  .brand { gap: 7px; }
+  .brand small { display: none; }
+  .header-actions { gap: 5px; }
+  .header-actions .plan-badge,
+  .header-actions #resetBtn { display: none; }
+  .header-actions .ghost { display: inline-block; padding: 7px 9px; font-size: 10px; }
+  .header-actions .ghost[hidden] { display: none; }
+  .upgrade-button { padding: 8px 10px; font-size: 10px; }
+  .hero { gap: 14px; }
+  .hero-orb { flex: 0 0 100px; }
+  .quiz-shell { padding: 22px 18px; }
+}

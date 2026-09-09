@@ -9,6 +9,7 @@ const manifest = await readFile(new URL("../manifest.webmanifest", import.meta.u
 const terms = await readFile(new URL("../legal/terms.html", import.meta.url), "utf8");
 const privacy = await readFile(new URL("../legal/privacy.html", import.meta.url), "utf8");
 const commercial = await readFile(new URL("../legal/commercial.html", import.meta.url), "utf8");
+const expandedStyles = await readFile(new URL("../cards-expanded.css", import.meta.url), "utf8");
 
 test("premium study details are not shipped in the public client bundle", () => {
   assert.equal(client.includes("緊張による動悸感・寝つきの悪さ"), false);
@@ -77,4 +78,10 @@ test("transactional emails include support and safe purchase guidance", async ()
   assert.match(email, /email_deliveries/);
   assert.match(webhook, /sendPurchaseEmailOnce/);
   assert.doesNotMatch(email, /[sr]k_(?:test|live)_/);
+});
+
+test("mobile layout keeps account recovery controls available", () => {
+  assert.match(expandedStyles, /\.header-actions \.ghost \{ display: inline-block/);
+  assert.match(expandedStyles, /\.header-actions #resetBtn \{ display: none/);
+  assert.match(expandedStyles, /\.header-actions \.ghost\[hidden\] \{ display: none/);
 });
