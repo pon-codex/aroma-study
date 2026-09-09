@@ -10,6 +10,8 @@ const terms = await readFile(new URL("../legal/terms.html", import.meta.url), "u
 const privacy = await readFile(new URL("../legal/privacy.html", import.meta.url), "utf8");
 const commercial = await readFile(new URL("../legal/commercial.html", import.meta.url), "utf8");
 const expandedStyles = await readFile(new URL("../cards-expanded.css", import.meta.url), "utf8");
+const robots = await readFile(new URL("../robots.txt", import.meta.url), "utf8");
+const sitemap = await readFile(new URL("../sitemap.xml", import.meta.url), "utf8");
 
 test("premium study details are not shipped in the public client bundle", () => {
   assert.equal(client.includes("緊張による動悸感・寝つきの悪さ"), false);
@@ -98,4 +100,69 @@ test("social sharing metadata uses the production domain and preview image", () 
   assert.match(html, /<link rel="canonical" href="https:\/\/seiyu-shiori\.com\/"/);
   assert.match(html, /property="og:image" content="https:\/\/seiyu-shiori\.com\/social-preview\.png"/);
   assert.match(html, /name="twitter:card" content="summary_large_image"/);
+});
+
+test("search metadata exposes the app without indexing private APIs", () => {
+  assert.match(html, /"@type": "SoftwareApplication"/);
+  assert.match(html, /"price": "550"/);
+  assert.match(html, /"priceCurrency": "JPY"/);
+  assert.match(robots, /Disallow: \/api\//);
+  assert.match(robots, /https:\/\/seiyu-shiori\.com\/sitemap\.xml/);
+  assert.match(sitemap, /https:\/\/seiyu-shiori\.com\/legal\/privacy/);
+});
+
+test("anonymous funnel analytics excludes personal and study-answer data", async () => {
+  const analytics = await readFile(new URL("../functions/api/analytics.js", import.meta.url), "utf8");
+  assert.match(client, /trackEvent\('checkout_start'/);
+  assert.match(client, /trackEventOnce\('purchase_success'/);
+  assert.match(analytics, /allowedEvents/);
+  assert.match(analytics, /invalid_origin/);
+  assert.doesNotMatch(analytics, /email|quiz_answer|search_query/i);
+  assert.match(privacy, /匿名のセッション識別子/);
+  assert.match(privacy, /クイズで選んだ回答.*サーバーへ送信しません/);
+});
+
+test("analytics API accepts only same-origin whitelisted anonymous events", async () => {
+  const { onRequestPost } = await import("../functions/api/analytics.js");
+  const writes = [];
+  const env = {
+    DB: {
+      prepare(sql) {
+        return {
+          bind(...values) {
+            return { run: async () => writes.push({ sql, values }) };
+          },
+        };
+      },
+    },
+  };
+  const payload = {
+    eventId: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
+    sessionId: "bbbbbbbb-bbbb-4bbb-bbbb-bbbbbbbbbbbb",
+    eventName: "quiz_start",
+    context: "component",
+    value: "5",
+    path: "/",
+  };
+  const accepted = await onRequestPost({
+    env,
+    request: new Request("https://seiyu-shiori.com/api/analytics", {
+      method: "POST",
+      headers: { origin: "https://seiyu-shiori.com", "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+  });
+  assert.equal(accepted.status, 204);
+  assert.equal(writes.length, 1);
+
+  const rejected = await onRequestPost({
+    env,
+    request: new Request("https://seiyu-shiori.com/api/analytics", {
+      method: "POST",
+      headers: { origin: "https://example.com", "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    }),
+  });
+  assert.equal(rejected.status, 403);
+  assert.equal(writes.length, 1);
 });

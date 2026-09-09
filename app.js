@@ -12,6 +12,21 @@ const hasQuizAccess=(topic,count)=>isPremium()||(topic==='component'&&count===5)
 const shuffle=list=>[...list].sort(()=>Math.random()-.5);
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[char]);
 
+const analyticsParams=new URLSearchParams(location.search);
+const analyticsSessionId=(()=>{
+ const key='seiyuShioriAnalyticsSession';
+ try{const current=sessionStorage.getItem(key);if(current)return current;const created=crypto.randomUUID();sessionStorage.setItem(key,created);return created}catch{return crypto.randomUUID()}
+})();
+const analyticsSource=analyticsParams.get('utm_source')||(()=>{try{return document.referrer?new URL(document.referrer).hostname:''}catch{return''}})();
+function trackEvent(eventName,{context='',value=''}={}){
+ const payload={eventId:crypto.randomUUID(),sessionId:analyticsSessionId,eventName,context,value,source:analyticsSource,medium:analyticsParams.get('utm_medium')||'',campaign:analyticsParams.get('utm_campaign')||'',path:location.pathname};
+ fetch('/api/analytics',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload),credentials:'omit',keepalive:true}).catch(()=>{});
+}
+function trackEventOnce(eventName,key,detail){
+ try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1')}catch{}
+ trackEvent(eventName,detail);
+}
+
 function renderCards(){
  const list=catalog().filter(o=>{
   const text=[o.name,o.latin,o.cat,o.scent,o.key,o.aroma,o.bodyConcern,o.family,o.extraction].filter(Boolean).join(' ').toLowerCase();
@@ -26,7 +41,7 @@ function renderCards(){
   return `<article class="oil-card ${flipped.has(o.name)?'flipped':''}" data-name="${o.name}"><div class="card-inner"><div class="face front"><span class="oil-no">${String(index+1).padStart(2,'0')} / ESSENTIAL OIL</span><h3>${o.name}</h3><span class="latin">${o.latin}</span><div class="card-meta"><span class="family"><small>植物科名</small>${o.family}</span><span class="extraction"><small>抽出方法</small>${o.extraction}</span></div><div class="plant-photo" role="img" aria-label="${o.name}の原料植物の写真風イラスト" style="background-position:${col*25}% ${row*20}%"></div><div class="aroma-profile"><span class="scent">${o.scent}香り</span><p>${o.aroma}</p></div><span class="tag">${o.cat}　·　${o.note}</span></div><div class="face back"><h4>${o.name}｜身体の不調と活用</h4><p><b>科名：</b>${o.family}　<b>主な成分：</b>${o.key}</p><p class="extraction-detail"><b>抽出方法：</b>${o.extraction}</p><div class="body-box"><b>選ばれることがある不調</b><p>${symptoms}</p></div><p class="body-detail">${detail}</p><div class="effect-list compact">${o.effect.split('｜').filter(x=>!x.startsWith('身体：')).map(x=>`<p>${x}</p>`).join('')}</div><span class="mark">※診断・治療の代わりではありません</span></div></div></article>`;
  }).join('');
  document.querySelectorAll('.oil-card:not(.locked-card)').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()});
- document.querySelectorAll('[data-upgrade]').forEach(c=>c.onclick=showUpgrade);
+ document.querySelectorAll('[data-upgrade]').forEach(c=>c.onclick=()=>showUpgrade('locked_card'));
 }
 
 function makeQuestion(o,topic){
@@ -49,6 +64,7 @@ function renderQuizSetup(){
 }
 function startQuiz(){
  if(!hasQuizAccess(quizSettings.topic,quizSettings.count))return showUpgrade();
+ trackEvent('quiz_start',{context:quizSettings.topic,value:String(quizSettings.count)});
  const topics=quizSettings.topic==='all'?Object.keys(quizTopics):[quizSettings.topic],oilOrder=shuffle(fullOils()),topicOrder=shuffle(topics);
  quizQuestions=Array.from({length:quizSettings.count},(_,i)=>makeQuestion(oilOrder[i%oilOrder.length],topicOrder[i%topicOrder.length]));
  quizIndex=0;correct=0;answered=false;quizStarted=true;renderQuiz();
@@ -66,7 +82,7 @@ function renderQuiz(){
  document.querySelectorAll('.answer').forEach(b=>b.onclick=()=>{if(answered)return;answered=true;const ok=b.dataset.answer===q.answer;if(ok){correct++;b.classList.add('correct');localStorage.setItem('aromaTotalCorrect',Number(localStorage.getItem('aromaTotalCorrect')||0)+1)}else{b.classList.add('wrong');document.querySelectorAll('.answer').forEach(x=>x.dataset.answer===q.answer&&x.classList.add('correct'))}$('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;$('#quizFeedback').innerHTML=`<p class="quiz-feedback ${ok?'ok':'ng'}">${ok?'正解！':`正解：${q.answer}`}</p><button class="next" id="next">${quizIndex+1===quizSettings.count?'結果を見る':'次の問題へ →'}</button>`;$('#next').onclick=()=>{quizIndex++;answered=false;renderQuiz()}});
 }
 
-function showUpgrade(){$('#upgradeModal').hidden=false;document.body.classList.add('modal-open');$('#closeUpgrade').focus()}
+function showUpgrade(context='unknown'){trackEvent('upgrade_view',{context});$('#upgradeModal').hidden=false;document.body.classList.add('modal-open');$('#closeUpgrade').focus()}
 function closeUpgrade(){$('#upgradeModal').hidden=true;document.body.classList.remove('modal-open')}
 function showStatus(message,type='info'){const el=$('#appStatus');el.textContent=message;el.dataset.type=type;el.hidden=false}
 function renderAccessUi(email=null){
@@ -76,12 +92,13 @@ function renderAccessUi(email=null){
 }
 async function beginCheckout(){
  const b=$('#checkoutButton');b.disabled=true;b.textContent='決済画面を準備しています…';$('#checkoutMessage').textContent='';
+ trackEvent('checkout_start',{context:'premium_lifetime',value:'550'});
  try{const r=await fetch('/api/checkout',{method:'POST'}),data=await r.json();if(!r.ok||!data.url)throw new Error(data.error||'checkout_failed');location.assign(data.url)}
- catch(e){$('#checkoutMessage').textContent=e.message==='payments_not_configured'?'決済の初期設定中です。しばらくしてからもう一度お試しください。':'決済画面を開けませんでした。時間をおいてお試しください。';b.disabled=false;b.textContent='550円で有料版を購入する'}
+ catch(e){trackEvent('checkout_error',{context:e.message});$('#checkoutMessage').textContent=e.message==='payments_not_configured'?'決済の初期設定中です。しばらくしてからもう一度お試しください。':'決済画面を開けませんでした。時間をおいてお試しください。';b.disabled=false;b.textContent='550円で有料版を購入する'}
 }
 async function requestRestore(e){
  e.preventDefault();const b=$('#restoreButton'),m=$('#restoreMessage');b.disabled=true;m.textContent='確認しています…';
- try{const r=await fetch('/api/restore/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#restoreEmail').value})}),data=await r.json();if(!r.ok)throw new Error(data.error||'restore_failed');m.textContent='購入履歴がある場合、復元用メールを送信しました。'}
+ try{const r=await fetch('/api/restore/request',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:$('#restoreEmail').value})}),data=await r.json();if(!r.ok)throw new Error(data.error||'restore_failed');trackEvent('restore_request');m.textContent='購入履歴がある場合、復元用メールを送信しました。'}
  catch(e){m.textContent=e.message==='restore_not_configured'?'メールでの購入復元は現在準備中です。':'復元メールを送信できませんでした。時間をおいてお試しください。'}finally{b.disabled=false}
 }
 async function loadAccess(){
@@ -89,9 +106,10 @@ async function loadAccess(){
  try{const r=await fetch(`/api/session${suffix}`,{credentials:'same-origin'});if(!r.ok)return;const session=await r.json();paymentsConfigured=session.configured;if(session.plan==='premium'){const cr=await fetch(`/api/premium-data${suffix}`,{credentials:'same-origin'});if(!cr.ok)throw new Error();premiumOils=(await cr.json()).oils;accessPlan='premium';quizSettings={topic:'all',count:5};renderAccessUi(session.email);renderCards();if($('#quizView').classList.contains('active'))renderQuizSetup()}}catch{showStatus('会員情報を確認できなかったため、無料版を表示しています。','warning')}
  $('#checkoutButton').disabled=!paymentsConfigured;$('#checkoutButton').textContent=paymentsConfigured?'550円で有料版を購入する':'決済の初期設定中';
 }
-function showReturnStatus(){const p=new URLSearchParams(location.search),c=p.get('checkout'),r=p.get('restore');if(c==='success')showStatus('ご購入ありがとうございます。有料版を開放しました。','success');else if(c==='pending')showStatus('お支払いを受け付けました。入金確認後に有料版を開放します。','info');else if(c==='cancelled')showStatus('決済はキャンセルされました。料金は発生していません。');else if(c)showStatus('購入状態を確認できませんでした。サポートへお問い合わせください。','warning');if(r==='success')showStatus('購入済みアクセスを復元しました。','success');else if(r==='invalid')showStatus('復元リンクが無効または期限切れです。','warning')}
+function showReturnStatus(){const p=new URLSearchParams(location.search),c=p.get('checkout'),r=p.get('restore');if(c==='success'){trackEventOnce('purchase_success','seiyuShioriPurchaseTracked',{context:'premium_lifetime',value:'550'});showStatus('ご購入ありがとうございます。有料版を開放しました。','success')}else if(c==='pending')showStatus('お支払いを受け付けました。入金確認後に有料版を開放します。','info');else if(c==='cancelled')showStatus('決済はキャンセルされました。料金は発生していません。');else if(c)showStatus('購入状態を確認できませんでした。サポートへお問い合わせください。','warning');if(r==='success'){trackEventOnce('restore_success','seiyuShioriRestoreTracked');showStatus('購入済みアクセスを復元しました。','success')}else if(r==='invalid')showStatus('復元リンクが無効または期限切れです。','warning')}
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});
-$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=showUpgrade;$('#accountBtn').onclick=showUpgrade;$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};
+$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=()=>showUpgrade('header');$('#accountBtn').onclick=()=>showUpgrade('restore_header');$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};
 $('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;renderAccessUi();renderCards();showReturnStatus();loadAccess();
+trackEventOnce('app_view','seiyuShioriAppViewTracked');

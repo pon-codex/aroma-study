@@ -7,8 +7,36 @@
 3. Stripe WorkbenchのWebhook送信先で、失敗した配信がないことを確認する。
 4. Resend Logsで購入完了メール・復元メールの配信失敗がないことを確認する。
 5. `support@seiyu-shiori.com` の受信と返信ができることを確認する。
+6. Cloudflare Web Analyticsで訪問数、参照元、端末種別を確認する。
+7. D1の `analytics_events` で、アプリ利用から購入までの件数を確認する。
 
 ヘルスチェックは秘密情報や設定値を本文へ出さない。正常時は `204`、設定不足またはD1接続エラー時は `503` のみを返す。
+
+## 売上導線の確認
+
+D1コンソールで以下を実行すると、直近30日の各段階を確認できる。
+
+```sql
+SELECT event_name, COUNT(*) AS total
+FROM analytics_events
+WHERE created_at >= unixepoch('now', '-30 days')
+GROUP BY event_name
+ORDER BY total DESC;
+```
+
+流入元別の購入状況は以下で確認する。
+
+```sql
+SELECT COALESCE(source, '(direct)') AS source,
+       COUNT(DISTINCT session_id) AS sessions,
+       SUM(CASE WHEN event_name = 'purchase_success' THEN 1 ELSE 0 END) AS purchases
+FROM analytics_events
+WHERE created_at >= unixepoch('now', '-30 days')
+GROUP BY source
+ORDER BY purchases DESC, sessions DESC;
+```
+
+記録対象は匿名の操作種別に限定し、メールアドレス、検索語、クイズの回答内容は保存しない。
 
 ## 購入後に有料版が開かない場合
 
