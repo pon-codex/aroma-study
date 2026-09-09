@@ -166,6 +166,10 @@
 .app-status[data-type="warning"] { border-color: #e4d4b7; background: #fff8e8; color: #795c2e; }
 .app-status[data-type="success"] { border-color: #bfd6c4; background: #eaf6ed; color: #315f3b; }
 .install-hint { display: none; }
+.scroll-top-button { position: fixed; z-index: 60; right: max(16px,env(safe-area-inset-right)); bottom: max(18px,calc(env(safe-area-inset-bottom) + 12px)); display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid rgba(255,255,255,.62); border-radius: 50%; background: var(--deep); color: #fff; box-shadow: 0 7px 22px rgba(30,49,40,.25); cursor: pointer; font: 700 22px/1 'DM Sans',sans-serif; }
+.scroll-top-button[hidden] { display: none; }
+.scroll-top-button:hover { background: #2f493d; transform: translateY(-1px); }
+.scroll-top-button:focus-visible { outline: 3px solid rgba(190,157,82,.48); outline-offset: 3px; }
 @media(max-width:600px) { .header-actions .plan-badge,.header-actions .ghost { display:none; } .plan-comparison { grid-template-columns:1fr; } .upgrade-modal { padding: 25px 20px; } }
 @media(max-width:600px) { .restore-panel form > div { display:grid; } }
 @media(max-width:600px) {

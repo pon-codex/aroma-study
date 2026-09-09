@@ -3,7 +3,7 @@ const premiumTeasers=[{"name":"ローズマリー","latin":"Rosmarinus officinal
 const $=s=>document.querySelector(s);
 const quizTopics={component:'主要成分',family:'科名',extraction:'抽出方法',symptom:'症状'};
 const localPreview=['localhost','127.0.0.1'].includes(location.hostname)&&new URLSearchParams(location.search).get('preview')==='premium';
-let accessPlan='free',paymentsConfigured=false,premiumOils=[],filter='すべて',query='',flipped=new Set();
+let accessPlan='free',paymentsConfigured=false,premiumOils=[],filter='すべて',query='',flipped=new Set(),scrollTopThreshold=Infinity;
 let quizSettings={topic:'component',count:5},quizQuestions=[],quizIndex=0,answered=false,correct=0,quizStarted=false;
 const isPremium=()=>accessPlan==='premium';
 const fullOils=()=>isPremium()?[...freeOils,...premiumOils]:freeOils;
@@ -42,6 +42,7 @@ function renderCards(){
  }).join('');
  document.querySelectorAll('.oil-card:not(.locked-card)').forEach(c=>c.onclick=()=>{flipped.has(c.dataset.name)?flipped.delete(c.dataset.name):flipped.add(c.dataset.name);renderCards()});
  document.querySelectorAll('[data-upgrade]').forEach(c=>c.onclick=()=>showUpgrade('locked_card'));
+ setScrollTopThreshold();
 }
 
 function makeQuestion(o,topic){
@@ -118,9 +119,15 @@ function showInstallHint(){
  $('#installHintSteps').textContent=ios?'Safariの共有ボタンを押し、「ホーム画面に追加」を選んでください。':'Chromeのメニューから「ホーム画面に追加」または「アプリをインストール」を選んでください。';
  $('#installHint').hidden=false;$('#installHint').classList.add('is-visible');
 }
+function updateScrollTopButton(){$('#scrollTopButton').hidden=window.scrollY<scrollTopThreshold}
+function setScrollTopThreshold(){
+ const cards=[...document.querySelectorAll('#cardGrid .oil-card')];
+ if(cards[1]){const firstTop=cards[0].getBoundingClientRect().top+window.scrollY,secondTop=cards[1].getBoundingClientRect().top+window.scrollY,sameRow=Math.abs(secondTop-firstTop)<20;const target=sameRow?firstTop+cards[0].offsetHeight:secondTop;scrollTopThreshold=Math.max(240,target-window.innerHeight*.75)}else scrollTopThreshold=Infinity;
+ updateScrollTopButton();
+}
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));$(`#${b.dataset.view}View`).classList.add('active');if(b.dataset.view==='quiz')renderQuiz()});
 document.querySelectorAll('.filter').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;renderCards()});
-$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=()=>showUpgrade('header');$('#accountBtn').onclick=()=>showUpgrade('restore_header');$('#summaryUpgradeBtn').onclick=()=>showUpgrade('comparison');$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};$('#dismissInstallHint').onclick=()=>{sessionStorage.setItem('installHintDismissed','1');$('#installHint').hidden=true;$('#installHint').classList.remove('is-visible')};
+$('#search').oninput=e=>{query=e.target.value;renderCards()};$('#upgradeBtn').onclick=()=>showUpgrade('header');$('#accountBtn').onclick=()=>showUpgrade('restore_header');$('#summaryUpgradeBtn').onclick=()=>showUpgrade('comparison');$('#closeUpgrade').onclick=closeUpgrade;$('#upgradeModal').onclick=e=>{if(e.target.id==='upgradeModal')closeUpgrade()};document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#upgradeModal').hidden)closeUpgrade()});$('#checkoutButton').onclick=beginCheckout;$('#restoreForm').onsubmit=requestRestore;$('#logoutBtn').onclick=async()=>{await fetch('/api/logout',{method:'POST'});location.reload()};$('#resetBtn').onclick=()=>{localStorage.clear();quizStarted=false;correct=0;quizIndex=0;$('#score').textContent='設定';$('#todayCount').textContent='0';renderCards()};$('#dismissInstallHint').onclick=()=>{sessionStorage.setItem('installHintDismissed','1');$('#installHint').hidden=true;$('#installHint').classList.remove('is-visible')};$('#scrollTopButton').onclick=()=>window.scrollTo({top:0,behavior:'auto'});addEventListener('scroll',updateScrollTopButton,{passive:true});addEventListener('resize',setScrollTopThreshold,{passive:true});
 $('#todayCount').textContent=localStorage.getItem('aromaTotalCorrect')||0;renderAccessUi();renderCards();showReturnStatus();showInstallHint();loadAccess();
 trackEventOnce('app_view','seiyuShioriAppViewTracked');

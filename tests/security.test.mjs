@@ -99,8 +99,17 @@ test("mobile users receive platform-specific home screen guidance", () => {
   assert.match(client, /アプリをインストール/);
   assert.match(client, /display-mode: standalone/);
   assert.match(expandedStyles, /\.install-hint\.is-visible/);
-  assert.match(html, /cards-expanded\.css\?v=install-hint-20260909/);
-  assert.match(html, /app\.js\?v=install-hint-20260909/);
+});
+
+test("scroll-to-top control appears after the second card threshold", () => {
+  assert.match(html, /id="scrollTopButton"/);
+  assert.match(html, /aria-label="画面の一番上へ戻る"/);
+  assert.match(client, /cards\[1\]/);
+  assert.match(client, /window\.scrollY<scrollTopThreshold/);
+  assert.match(client, /scrollTo\(\{top:0,behavior:'auto'\}\)/);
+  assert.match(expandedStyles, /\.scroll-top-button/);
+  assert.match(html, /cards-expanded\.css\?v=scroll-top-20260909/);
+  assert.match(html, /app\.js\?v=scroll-top-20260909/);
 });
 
 test("health check exposes status codes without configuration details", async () => {
