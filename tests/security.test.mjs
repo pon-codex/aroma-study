@@ -85,3 +85,11 @@ test("mobile layout keeps account recovery controls available", () => {
   assert.match(expandedStyles, /\.header-actions #resetBtn \{ display: none/);
   assert.match(expandedStyles, /\.header-actions \.ghost\[hidden\] \{ display: none/);
 });
+
+test("health check exposes status codes without configuration details", async () => {
+  const health = await readFile(new URL("../functions/api/health.js", import.meta.url), "utf8");
+  assert.match(health, /status: 204/);
+  assert.match(health, /status: 503/);
+  assert.match(health, /SELECT 1 AS ok/);
+  assert.doesNotMatch(health, /JSON\.stringify|env\[[^\]]+\]|Object\.keys\(env\)/);
+});
