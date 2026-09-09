@@ -10,6 +10,7 @@ const fullOils=()=>isPremium()?[...freeOils,...premiumOils]:freeOils;
 const catalog=()=>isPremium()?fullOils():[...freeOils,...premiumTeasers];
 const hasQuizAccess=(topic,count)=>isPremium()||(topic==='component'&&count===5);
 const shuffle=list=>[...list].sort(()=>Math.random()-.5);
+const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[char]);
 
 function renderCards(){
  const list=catalog().filter(o=>{
@@ -70,7 +71,7 @@ function closeUpgrade(){$('#upgradeModal').hidden=true;document.body.classList.r
 function showStatus(message,type='info'){const el=$('#appStatus');el.textContent=message;el.dataset.type=type;el.hidden=false}
 function renderAccessUi(email=null){
  $('#planBadge').textContent=isPremium()?'有料版':'無料版';$('#upgradeBtn').hidden=isPremium();$('#accountBtn').hidden=isPremium();$('#logoutBtn').hidden=!isPremium();
- $('#accessNotice').innerHTML=isPremium()?`有料版：30種類と全クイズを利用できます。${email?` <small>${email}</small>`:''}`:`無料版では10種類を体験できます。<button id="noticeUpgrade">残り20種類を開放</button>`;
+ $('#accessNotice').innerHTML=isPremium()?`有料版：30種類と全クイズを利用できます。${email?` <small>${escapeHtml(email)}</small>`:''}`:`無料版では10種類を体験できます。<button id="noticeUpgrade">残り20種類を開放</button>`;
  if($('#noticeUpgrade'))$('#noticeUpgrade').onclick=showUpgrade;
 }
 async function beginCheckout(){

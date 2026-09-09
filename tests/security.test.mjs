@@ -39,6 +39,7 @@ test("legal pages are linked and cover the paid service", () => {
 
 test("API calls never embed a Stripe secret in client-side code", () => {
   assert.doesNotMatch(client, /[sr]k_(?:test|live)_/);
+  assert.match(client, /escapeHtml\(email\)/);
 });
 
 test("Checkout uses a server-side Stripe Price and dynamic payment methods", async () => {
@@ -59,9 +60,10 @@ test("the free and premium oil ranges stay at 10 and 30", () => {
 });
 
 test("opening offer clearly states its price and upgrade policy", () => {
-  assert.match(html, /オープニング限定/);
+  assert.match(html, /機能追加までの限定価格/);
   assert.match(html, /¥550/);
   assert.match(html, /追加料金なし/);
+  assert.match(html, /購入により.*利用規約/);
   assert.match(html, /追加後は ¥880 を予定/);
   assert.doesNotMatch(html, /¥1,480/);
 });
