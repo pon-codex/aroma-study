@@ -120,6 +120,7 @@ test("anonymous funnel analytics excludes personal and study-answer data", async
   assert.doesNotMatch(analytics, /email|quiz_answer|search_query/i);
   assert.match(privacy, /匿名のセッション識別子/);
   assert.match(privacy, /クイズで選んだ回答.*サーバーへ送信しません/);
+  assert.match(html, /app\.js\?v=growth-20260909/);
 });
 
 test("analytics API accepts only same-origin whitelisted anonymous events", async () => {
